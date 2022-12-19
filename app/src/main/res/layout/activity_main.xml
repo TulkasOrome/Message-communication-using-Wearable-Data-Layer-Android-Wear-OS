@@ -67,7 +67,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:scrollbars="vertical"
-                        android:text="@string/init"
+                        android:text="@string/data_incomming"
                         android:textSize="12sp" />
                 </ScrollView>
             </LinearLayout>
@@ -143,18 +143,6 @@
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
-                <Button
-                    android:id="@+id/sendmessageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="?attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:scrollbars="vertical"
-                    android:text="@string/send_message_alt"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
 
             </androidx.cardview.widget.CardView>
 

@@ -53,7 +53,8 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
     var textView: TextView? = null
     var sensorManager: SensorManager? = null
-    var sensor: Sensor? = null
+    var sensorG: Sensor? = null
+    var sensorA: Sensor? = null
 
 
     //textView = findViewById<TextView>(R.id.text_view);
@@ -62,7 +63,8 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     override fun onCreate(savedInstanceState: Bundle?) {
 
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
-        sensor = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+        sensorG = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+        sensorA = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
 
 
@@ -79,11 +81,8 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         //sensor variables
 
 
-
-
-
         //On click listener for sendmessage button
-        binding.sendmessageButton.setOnClickListener {
+        /* binding.sendmessageButton.setOnClickListener {
             if (mobileDeviceConnected) {
                 if (binding.messagecontentEditText.text!!.isNotEmpty()) {
 
@@ -128,6 +127,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
                 }
             }
         }
+    }*/
     }
 
 
@@ -194,8 +194,8 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
                             mobileDeviceConnected = true
 
-                            binding.textInputLayout.visibility = View.VISIBLE
-                            binding.sendmessageButton.visibility = View.VISIBLE
+                          //  binding.textInputLayout.visibility = View.VISIBLE
+                          //  binding.sendmessageButton.visibility = View.VISIBLE
                             binding.deviceconnectionStatusTv.visibility = View.VISIBLE
                             binding.deviceconnectionStatusTv.text = "Mobile device is connected"
                         } else {
@@ -213,8 +213,8 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
             else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
                 try {
                     binding.messagelogTextView.visibility = View.VISIBLE
-                    binding.textInputLayout.visibility = View.VISIBLE
-                    binding.sendmessageButton.visibility = View.VISIBLE
+                   // binding.textInputLayout.visibility = View.VISIBLE
+                 //   binding.sendmessageButton.visibility = View.VISIBLE
                     binding.deviceconnectionStatusTv.visibility = View.GONE
 
                     val sbTemp = StringBuilder()
@@ -246,7 +246,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
             Wearable.getDataClient(activityContext!!).removeListener(this)
             Wearable.getMessageClient(activityContext!!).removeListener(this)
             Wearable.getCapabilityClient(activityContext!!).removeListener(this)
-            sensorManager.unregisterListener(mLightSensorListener)
+            sensorManager?.unregisterListener(mLightSensorListener)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -256,7 +256,8 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     override fun onResume() {
         super.onResume()
         try {
-            sensorManager?.registerListener(mLightSensorListener, sensor, SensorManager.SENSOR_DELAY_FASTEST)
+            sensorManager?.registerListener(mLightSensorListener, sensorG, SensorManager.SENSOR_DELAY_NORMAL)
+            sensorManager?.registerListener(aEventListener, sensorA, SensorManager.SENSOR_DELAY_NORMAL)
             Wearable.getDataClient(activityContext!!).addListener(this)
             Wearable.getMessageClient(activityContext!!).addListener(this)
             Wearable.getCapabilityClient(activityContext!!)
@@ -273,7 +274,9 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         override fun onSensorChanged(event: SensorEvent) {
             try {
                 val `object` = JSONObject()
-                `object`.put("heart_rate", event.values[0].toInt())
+                `object`.put("gyroscopeX ", event.values[0].toInt())
+                `object`.put("gyroscopeY ", event.values[1].toInt())
+                `object`.put("gyroscopeZ ", event.values[2].toInt())
                 `object`.put("timestamp", Instant.now().toString())
                 MessageSender("/MessageChannel", `object`.toString(), applicationContext).start()
             } catch (e: JSONException) {
@@ -281,6 +284,63 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
             }
 
             Log.d("MY_APP", event.values[0].toString())
+            if (mobileDeviceConnected) {
+
+                val nodeId: String = messageEvent?.sourceNodeId!!
+                // Set the data of the message to be the bytes of the Uri.
+                val payload: ByteArray =
+                    event.values[0].toString().toByteArray()
+
+                // Send the rpc
+                // Instantiates clients without member variables, as clients are inexpensive to
+                // create. (They are cached and shared between GoogleApi instances.)
+                val sendMessageTask =
+                    Wearable.getMessageClient(activityContext!!)
+                        .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
+
+                binding.deviceconnectionStatusTv.visibility = View.GONE
+            }
+
+        }
+
+        override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+            Log.d("MY_APP", "${sensor.id} - $accuracy")
+        }
+    }
+
+
+    private val aEventListener: SensorEventListener = object : SensorEventListener {
+        @RequiresApi(Build.VERSION_CODES.O)
+        override fun onSensorChanged(event: SensorEvent) {
+            try {
+                val `object` = JSONObject()
+                `object`.put("accelerometerX", event.values[0].toInt())
+                `object`.put("accelerometerY", event.values[1].toInt())
+                `object`.put("accelerometerZ", event.values[2].toInt())
+                `object`.put("timestamp", Instant.now().toString())
+                MessageSender("/MessageChannel", `object`.toString(), applicationContext).start()
+            } catch (e: JSONException) {
+                Log.e(ContentValues.TAG, "Failed to create JSON object")
+            }
+
+            Log.d("MY_APP", event.values[0].toString())
+            if (mobileDeviceConnected) {
+
+                val nodeId: String = messageEvent?.sourceNodeId!!
+                // Set the data of the message to be the bytes of the Uri.
+                val payload: ByteArray =
+                    event.values[0].toString().toByteArray()
+
+                // Send the rpc
+                // Instantiates clients without member variables, as clients are inexpensive to
+                // create. (They are cached and shared between GoogleApi instances.)
+                val sendMessageTask =
+                    Wearable.getMessageClient(activityContext!!)
+                        .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
+
+                binding.deviceconnectionStatusTv.visibility = View.GONE
+            }
+
         }
 
         override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {

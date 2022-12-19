@@ -58,8 +58,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }
 
 
-
-        binding.sendmessageButton.setOnClickListener {
+        /* binding.sendmessageButton.setOnClickListener {
             if (wearableDeviceConnected) {
                 if (binding.messagecontentEditText.text!!.isNotEmpty()) {
 
@@ -103,7 +102,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             }
         }
     }
-
+*/
+    }
 
     @SuppressLint("SetTextI18n")
     private fun initialiseDevicePairing(tempAct: Activity) {
@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                             "Wearable device paired and app is open."
                         binding.deviceconnectionStatusTv.visibility = View.VISIBLE
                         wearableDeviceConnected = true
-                        binding.sendmessageButton.visibility = View.VISIBLE
+                       // binding.sendmessageButton.visibility = View.VISIBLE
                     } else {
                         Toast.makeText(
                             activityContext,
@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                             "Wearable device paired but app isn't open."
                         binding.deviceconnectionStatusTv.visibility = View.VISIBLE
                         wearableDeviceConnected = false
-                        binding.sendmessageButton.visibility = View.GONE
+                       // binding.sendmessageButton.visibility = View.GONE
                     }
                 } else {
                     Toast.makeText(
@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                         "Wearable device not paired and connected."
                     binding.deviceconnectionStatusTv.visibility = View.VISIBLE
                     wearableDeviceConnected = false
-                    binding.sendmessageButton.visibility = View.GONE
+                   // binding.sendmessageButton.visibility = View.GONE
                 }
             }
         }
@@ -300,15 +300,15 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
                 try {
                     binding.messagelogTextView.visibility = View.VISIBLE
-                    binding.textInputLayout.visibility = View.VISIBLE
-                    binding.sendmessageButton.visibility = View.VISIBLE
+                  //  binding.textInputLayout.visibility = View.VISIBLE
+                 //   binding.sendmessageButton.visibility = View.VISIBLE
 
-                    val sbTemp = StringBuilder()
-                    sbTemp.append("\n")
-                    sbTemp.append(s)
-                    sbTemp.append(" - (Received from wearable)")
-                    Log.d("receive1", " $sbTemp")
-                    binding.messagelogTextView.append(sbTemp)
+                  //  val sbTemp = StringBuilder()
+                   // sbTemp.append("\n")
+                   // sbTemp.append(s)
+                   // sbTemp.append(" - (Received from wearable)")
+                  //  Log.d("receive1", " $sbTemp")
+                  //  binding.messagelogTextView.append(sbTemp)
 
                     binding.scrollviewText.requestFocus()
                     binding.scrollviewText.post {
