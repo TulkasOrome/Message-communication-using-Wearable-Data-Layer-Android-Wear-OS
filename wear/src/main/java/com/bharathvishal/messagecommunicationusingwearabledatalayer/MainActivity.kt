@@ -1,19 +1,30 @@
 package com.bharathvishal.messagecommunicationusingwearabledatalayer
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ScrollView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.ambient.AmbientModeSupport.AmbientCallback
 import com.bharathvishal.messagecommunicationusingwearabledatalayer.databinding.ActivityMainBinding
 import com.google.android.gms.wearable.*
+import org.json.JSONException
+import org.json.JSONObject
 import java.nio.charset.StandardCharsets
+import java.time.Instant
 
 class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider,
     DataClient.OnDataChangedListener,
@@ -40,8 +51,21 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
     private lateinit var ambientController: AmbientModeSupport.AmbientController
 
+    var textView: TextView? = null
+    var sensorManager: SensorManager? = null
+    var sensor: Sensor? = null
+
+
+    //textView = findViewById<TextView>(R.id.text_view);
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
+        sensor = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+
+
+
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
@@ -51,6 +75,11 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
         // Enables Always-on
         ambientController = AmbientModeSupport.attach(this)
+
+        //sensor variables
+
+
+
 
 
         //On click listener for sendmessage button
@@ -100,6 +129,8 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
             }
         }
     }
+
+
 
     override fun onDataChanged(p0: DataEventBuffer) {
     }
@@ -215,6 +246,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
             Wearable.getDataClient(activityContext!!).removeListener(this)
             Wearable.getMessageClient(activityContext!!).removeListener(this)
             Wearable.getCapabilityClient(activityContext!!).removeListener(this)
+            sensorManager.unregisterListener(mLightSensorListener)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -224,12 +256,35 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     override fun onResume() {
         super.onResume()
         try {
+            sensorManager?.registerListener(mLightSensorListener, sensor, SensorManager.SENSOR_DELAY_FASTEST)
             Wearable.getDataClient(activityContext!!).addListener(this)
             Wearable.getMessageClient(activityContext!!).addListener(this)
             Wearable.getCapabilityClient(activityContext!!)
                 .addListener(this, Uri.parse("wear://"), CapabilityClient.FILTER_REACHABLE)
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+
+
+    private val mLightSensorListener: SensorEventListener = object : SensorEventListener {
+        @RequiresApi(Build.VERSION_CODES.O)
+        override fun onSensorChanged(event: SensorEvent) {
+            try {
+                val `object` = JSONObject()
+                `object`.put("heart_rate", event.values[0].toInt())
+                `object`.put("timestamp", Instant.now().toString())
+                MessageSender("/MessageChannel", `object`.toString(), applicationContext).start()
+            } catch (e: JSONException) {
+                Log.e(ContentValues.TAG, "Failed to create JSON object")
+            }
+
+            Log.d("MY_APP", event.values[0].toString())
+        }
+
+        override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+            Log.d("MY_APP", "${sensor.id} - $accuracy")
         }
     }
 
