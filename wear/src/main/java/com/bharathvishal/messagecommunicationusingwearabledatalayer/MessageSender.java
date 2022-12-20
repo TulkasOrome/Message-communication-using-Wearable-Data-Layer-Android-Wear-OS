@@ -1,4 +1,4 @@
-package com.bharathvishal.messagecommunicationusingwearabledatalayer;
+package com.betterbrick.proofofconcept;
 
 import android.content.Context;
 import android.util.Log;

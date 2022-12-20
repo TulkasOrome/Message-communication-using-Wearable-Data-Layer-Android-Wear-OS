@@ -1,4 +1,4 @@
-package com.bharathvishal.messagecommunicationusingwearabledatalayer
+package com.betterbrick.proofofconcept
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
@@ -19,7 +19,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.ambient.AmbientModeSupport.AmbientCallback
-import com.bharathvishal.messagecommunicationusingwearabledatalayer.databinding.ActivityMainBinding
+import com.betterbrick.proofofconcept.databinding.ActivityMainBinding
 import com.google.android.gms.wearable.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -278,7 +278,11 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
                 `object`.put("gyroscopeY ", event.values[1].toInt())
                 `object`.put("gyroscopeZ ", event.values[2].toInt())
                 `object`.put("timestamp", Instant.now().toString())
-                MessageSender("/MessageChannel", `object`.toString(), applicationContext).start()
+                com.betterbrick.proofofconcept.MessageSender(
+                    "/MessageChannel",
+                    `object`.toString(),
+                    applicationContext
+                ).start()
             } catch (e: JSONException) {
                 Log.e(ContentValues.TAG, "Failed to create JSON object")
             }
@@ -318,7 +322,11 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
                 `object`.put("accelerometerY", event.values[1].toInt())
                 `object`.put("accelerometerZ", event.values[2].toInt())
                 `object`.put("timestamp", Instant.now().toString())
-                MessageSender("/MessageChannel", `object`.toString(), applicationContext).start()
+                com.betterbrick.proofofconcept.MessageSender(
+                    "/MessageChannel",
+                    `object`.toString(),
+                    applicationContext
+                ).start()
             } catch (e: JSONException) {
                 Log.e(ContentValues.TAG, "Failed to create JSON object")
             }

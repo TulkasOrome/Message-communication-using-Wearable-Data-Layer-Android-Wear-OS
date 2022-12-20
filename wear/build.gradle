@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
-        applicationId "com.bharathvishal.messagecommunicationusingwearabledatalayer"
+        applicationId "com.betterbrick.proofofconcept"
         minSdkVersion 25
         targetSdkVersion 33
         versionCode 78
@@ -42,7 +42,7 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    namespace 'com.bharathvishal.messagecommunicationusingwearabledatalayer'
+    namespace 'com.betterbrick.proofofconcept'
 }
 
 dependencies {

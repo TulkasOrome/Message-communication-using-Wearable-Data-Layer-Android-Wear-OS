@@ -68,7 +68,8 @@
                         android:layout_height="wrap_content"
                         android:scrollbars="vertical"
                         android:text="@string/data_incomming"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:visibility="invisible"/>
                 </ScrollView>
             </LinearLayout>
 

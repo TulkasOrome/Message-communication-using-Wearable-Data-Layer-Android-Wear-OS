@@ -1,4 +1,4 @@
-package com.bharathvishal.messagecommunicationusingwearabledatalayer
+package com.betterbrick.proofofconcept
 
 import android.app.Application
 import com.google.android.material.color.DynamicColors

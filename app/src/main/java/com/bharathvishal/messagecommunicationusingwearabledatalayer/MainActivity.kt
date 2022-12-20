@@ -1,4 +1,4 @@
-package com.bharathvishal.messagecommunicationusingwearabledatalayer
+package com.betterbrick.proofofconcept
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -9,14 +9,17 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.bharathvishal.messagecommunicationusingwearabledatalayer.databinding.ActivityMainBinding
+import com.betterbrick.proofofconcept.databinding.ActivityMainBinding
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.*
+import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import java.util.*
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
+
     DataClient.OnDataChangedListener,
     MessageClient.OnMessageReceivedListener,
     CapabilityClient.OnCapabilityChangedListener {
@@ -40,6 +43,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
@@ -279,7 +284,17 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                         + " "
                         + s
             )
-            if (messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
+           // var obj = JSONObject(s)
+          //  val updateMap: MutableMap<String, Any> = HashMap()
+          //  updateMap["s"] = s
+          //  val db= FirebaseFirestore.getInstance()
+           // db.collection("sensorData").add(obj)
+
+
+
+
+
+                if (messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
                 currentAckFromWearForAppOpenCheck = s
                 Log.d(
                     TAG_MESSAGE_RECEIVED,
@@ -299,7 +314,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             } else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
 
                 try {
-                    binding.messagelogTextView.visibility = View.VISIBLE
+
                   //  binding.textInputLayout.visibility = View.VISIBLE
                  //   binding.sendmessageButton.visibility = View.VISIBLE
 
@@ -322,6 +337,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             e.printStackTrace()
             Log.d("receive1", "Handled")
         }
+
     }
 
     override fun onCapabilityChanged(p0: CapabilityInfo) {

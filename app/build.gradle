@@ -1,12 +1,14 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
 
 android {
+
     compileSdkVersion 33
     buildToolsVersion "33.0.0"
     defaultConfig {
-        applicationId "com.bharathvishal.messagecommunicationusingwearabledatalayer"
+        applicationId "com.betterbrick.proofofconcept"
         minSdkVersion 23
         targetSdkVersion 33
         versionCode 78
@@ -39,10 +41,16 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    namespace 'com.bharathvishal.messagecommunicationusingwearabledatalayer'
+
+    namespace 'com.betterbrick.proofofconcept'
 }
 
+
 dependencies {
+    implementation platform('com.google.firebase:firebase-bom:31.1.1')
+    implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.google.firebase:firebase-analytics'
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.5.1'
