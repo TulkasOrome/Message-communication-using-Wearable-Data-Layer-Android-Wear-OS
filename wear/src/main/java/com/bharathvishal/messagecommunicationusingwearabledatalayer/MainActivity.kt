@@ -80,6 +80,17 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
         //sensor variables
 
+        binding.stopButton.setOnClickListener {
+            Log.d("TEST", "TEST")
+            Wearable.getDataClient(activityContext!!).removeListener(this)
+            Wearable.getMessageClient(activityContext!!).removeListener(this)
+            Wearable.getCapabilityClient(activityContext!!).removeListener(this)
+            sensorManager?.unregisterListener(mLightSensorListener)
+            sensorManager?.unregisterListener(aEventListener)
+
+
+        }
+
 
         //On click listener for sendmessage button
         /* binding.sendmessageButton.setOnClickListener {
@@ -288,7 +299,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
             }
 
             Log.d("MY_APP", event.values[0].toString())
-            if (mobileDeviceConnected) {
+           /* if (mobileDeviceConnected) {
 
                 val nodeId: String = messageEvent?.sourceNodeId!!
                 // Set the data of the message to be the bytes of the Uri.
@@ -303,7 +314,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
                         .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
 
                 binding.deviceconnectionStatusTv.visibility = View.GONE
-            }
+            }*/
 
         }
 
@@ -336,15 +347,15 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
                 val nodeId: String = messageEvent?.sourceNodeId!!
                 // Set the data of the message to be the bytes of the Uri.
-                val payload: ByteArray =
-                    event.values[0].toString().toByteArray()
+              //  val payload: ByteArray =
+                   // event.values[0].toString().toByteArray()
 
                 // Send the rpc
                 // Instantiates clients without member variables, as clients are inexpensive to
                 // create. (They are cached and shared between GoogleApi instances.)
-                val sendMessageTask =
-                    Wearable.getMessageClient(activityContext!!)
-                        .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
+               // val sendMessageTask =
+                   // Wearable.getMessageClient(activityContext!!)
+                       //.sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
 
                 binding.deviceconnectionStatusTv.visibility = View.GONE
             }

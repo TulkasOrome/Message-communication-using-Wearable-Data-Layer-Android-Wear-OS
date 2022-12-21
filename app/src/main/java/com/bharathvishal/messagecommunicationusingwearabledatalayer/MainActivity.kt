@@ -1,24 +1,27 @@
 package com.betterbrick.proofofconcept
 
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.Manifest.permission.*
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.betterbrick.proofofconcept.databinding.ActivityMainBinding
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.*
 import java.io.File
-import java.io.FileOutputStream
 import java.io.FileWriter
-import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
 import java.util.*
 
@@ -68,7 +71,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             }
         }
 
-
+     //   binding.saveButton.setOnClickListener {
+      //      writeFileOnInternalStorage(activityContext as MainActivity, "data.txt", dataUpdate.toString())
+    //    }
 
 
 
@@ -295,11 +300,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             )
 
            // var obj = JSONObject(s)
-          //  val updateMap: MutableMap<String, Any> = HashMap()
-          //  updateMap["s"] = s
-          //  val db= FirebaseFirestore.getInstance()
-           // db.collection("sensorData").add(obj)
-            dataUpdate.append(s)
+
+            val updateMap: MutableMap<String, Any> = HashMap()
+            updateMap["s"] = s
+            val db= FirebaseFirestore.getInstance()
+            db.collection("sensorData").add(updateMap)
+           // dataUpdate.append(s)
 
 
 
@@ -321,9 +327,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 binding.checkwearablesButton.visibility = View.GONE
                 messageEvent = p0
                 wearableNodeUri = p0.sourceNodeId
-            } else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
-
-                try {
+            }
 
                   //  binding.textInputLayout.visibility = View.VISIBLE
                  //   binding.sendmessageButton.visibility = View.VISIBLE
@@ -337,14 +341,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
 
 
-                 /*   binding.scrollviewText.requestFocus()
-                    binding.scrollviewText.post {
-                        binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
-                    }*/
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
+                  //  binding.scrollviewText.requestFocus()
+                  //  binding.scrollviewText.post {
+                      //  binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
+                 //   }
+
+
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d("receive1", "Handled")
@@ -381,9 +383,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     }
 
     fun writeFileOnInternalStorage(context: Context, sFileName: String?, sBody: String?) {
-        requestPermissions(arrayOf(WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE), 5)
 
-        val dir = File(context.filesDir, "/Download")
+        val dir = File(context.filesDir, "/")
         Log.d("DATALOC", dir.absolutePath)
         if (!dir.exists()) {
             dir.mkdir()
@@ -392,7 +393,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             val gpxfile = sFileName?.let { File(dir, it) }
             val writer = FileWriter(gpxfile)
             writer.append(sBody)
-            Log.d("DATALOC", dir.path,)
+            Log.d("DATALOC", dir.path)
             Log.d("DATANAME", dir.name)
             writer.flush()
             writer.close()
