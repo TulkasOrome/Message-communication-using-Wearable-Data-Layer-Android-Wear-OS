@@ -1,5 +1,7 @@
 package com.betterbrick.proofofconcept
 
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -12,11 +14,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.betterbrick.proofofconcept.databinding.ActivityMainBinding
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.*
-import org.json.JSONObject
+import java.io.File
+import java.io.FileOutputStream
+import java.io.FileWriter
+import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
 import java.util.*
+
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
@@ -40,6 +45,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private var wearableNodeUri: String? = null
 
     private lateinit var binding: ActivityMainBinding
+    public val dataUpdate = StringBuilder()
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +67,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 initialiseDevicePairing(tempAct)
             }
         }
+
+
+
 
 
         /* binding.sendmessageButton.setOnClickListener {
@@ -284,17 +293,18 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                         + " "
                         + s
             )
+
            // var obj = JSONObject(s)
           //  val updateMap: MutableMap<String, Any> = HashMap()
           //  updateMap["s"] = s
           //  val db= FirebaseFirestore.getInstance()
            // db.collection("sensorData").add(obj)
+            dataUpdate.append(s)
 
 
 
 
-
-                if (messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
+            if (messageEventPath == APP_OPEN_WEARABLE_PAYLOAD_PATH) {
                 currentAckFromWearForAppOpenCheck = s
                 Log.d(
                     TAG_MESSAGE_RECEIVED,
@@ -306,7 +316,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 sbTemp.append("\nWearable device connected.")
                 Log.d("receive1", " $sbTemp")
                 binding.messagelogTextView.text = sbTemp
-                binding.textInputLayout.visibility = View.VISIBLE
+                binding.messagelogTextView.visibility = View.VISIBLE
 
                 binding.checkwearablesButton.visibility = View.GONE
                 messageEvent = p0
@@ -325,10 +335,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                   //  Log.d("receive1", " $sbTemp")
                   //  binding.messagelogTextView.append(sbTemp)
 
-                    binding.scrollviewText.requestFocus()
+
+
+                 /*   binding.scrollviewText.requestFocus()
                     binding.scrollviewText.post {
                         binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
-                    }
+                    }*/
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -366,5 +378,41 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    fun writeFileOnInternalStorage(context: Context, sFileName: String?, sBody: String?) {
+        requestPermissions(arrayOf(WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE), 5)
+
+        val dir = File(context.filesDir, "/Download")
+        Log.d("DATALOC", dir.absolutePath)
+        if (!dir.exists()) {
+            dir.mkdir()
+        }
+        try {
+            val gpxfile = sFileName?.let { File(dir, it) }
+            val writer = FileWriter(gpxfile)
+            writer.append(sBody)
+            Log.d("DATALOC", dir.path,)
+            Log.d("DATANAME", dir.name)
+            writer.flush()
+            writer.close()
+
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+      } /*
+        try {
+            val fileout: FileOutputStream = openFileOutput("mytextfile.txt", MODE_PRIVATE)
+            val outputWriter = OutputStreamWriter(fileout)
+            outputWriter.append(sBody)
+            outputWriter.close()
+            //display file saved message
+            //Toast.makeText(
+              //  baseContext, "File saved successfully!",
+              //  Toast.LENGTH_SHORT
+          //  ).show()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }*/
+
     }
 }
