@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-       // getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         sensorG = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
         sensorA = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
@@ -366,8 +366,8 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     override fun onResume() {
         super.onResume()
         try {
-            //sensorManager?.registerListener(this, sensorG, SensorManager.SENSOR_DELAY_NORMAL)
-           // sensorManager?.registerListener(aEventListener, sensorA, SensorManager.SENSOR_DELAY_NORMAL)
+            sensorManager?.registerListener(mLightSensorListener, sensorG, SensorManager.SENSOR_DELAY_NORMAL)
+            sensorManager?.registerListener(aEventListener, sensorA, SensorManager.SENSOR_DELAY_NORMAL)
             Wearable.getDataClient(activityContext!!).addListener(this)
             Wearable.getMessageClient(activityContext!!).addListener(this)
             Wearable.getCapabilityClient(activityContext!!)
@@ -379,14 +379,20 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
 /// just change these to services?
 
-   private var mLightSensorListener SensorEventListener {
+    private val mLightSensorListener: SensorEventListener = object : SensorEventListener {
         @RequiresApi(Build.VERSION_CODES.O)
         override fun onSensorChanged(event: SensorEvent?) {
             try {
                 val `object` = JSONObject()
-                `object`.put("gyroscopeX ", event.values[0].toInt())
-                `object`.put("gyroscopeY ", event.values[1].toInt())
-                `object`.put("gyroscopeZ ", event.values[2].toInt())
+                if (event != null) {
+                    `object`.put("gyroscopeX ", event.values[0].toInt())
+                }
+                if (event != null) {
+                    `object`.put("gyroscopeY ", event.values[1].toInt())
+                }
+                if (event != null) {
+                    `object`.put("gyroscopeZ ", event.values[2].toInt())
+                }
                 `object`.put("timestamp", Instant.now().toString())
                 com.betterbrick.proofofconcept.MessageSender(
                     "/MessageChannel",
