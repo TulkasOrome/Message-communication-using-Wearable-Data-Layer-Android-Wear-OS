@@ -13,6 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <service
+            android:name=".SensorService"
+            android:enabled="true"
+            android:exported="true"></service>
 
         <uses-library
             android:name="com.google.android.wearable"
