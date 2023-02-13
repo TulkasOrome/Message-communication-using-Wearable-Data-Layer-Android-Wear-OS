@@ -3,6 +3,7 @@ package com.betterbrick.proofofconcept
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -12,6 +13,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
@@ -26,7 +28,7 @@ import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import java.time.Instant
 
-class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider,
+class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider, View.OnClickListener,
     DataClient.OnDataChangedListener,
     MessageClient.OnMessageReceivedListener,
     CapabilityClient.OnCapabilityChangedListener {
@@ -55,12 +57,22 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     var sensorManager: SensorManager? = null
     var sensorG: Sensor? = null
     var sensorA: Sensor? = null
-
+    private var start: Button? = null
+    private var stop: Button? = null
 
     //textView = findViewById<TextView>(R.id.text_view);
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        start = findViewById<View>(R.id.start) as Button
+
+        // assigning ID of stopButton
+        // to the object stop
+        stop = findViewById<View>(R.id.stop) as Button
+
+        start!!.setOnClickListener(this)
+        stop!!.setOnClickListener(this)
 
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
         sensorG = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
@@ -264,11 +276,31 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     }
 
 
+    override fun onClick(view: View) {
+
+        // process to be performed
+        // if start button is clicked
+        if (view === start) {
+
+            // starting the service
+            startService(Intent(this, SensorService::class.java))
+        }
+
+        // process to be performed
+        // if stop button is clicked
+        else if (view === stop) {
+
+            // stopping the service
+            stopService(Intent(this, SensorService::class.java))
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         try {
-            sensorManager?.registerListener(mLightSensorListener, sensorG, SensorManager.SENSOR_DELAY_NORMAL)
-            sensorManager?.registerListener(aEventListener, sensorA, SensorManager.SENSOR_DELAY_NORMAL)
+
+
+            //sensorManager?.registerListener(aEventListener, sensorA, SensorManager.SENSOR_DELAY_NORMAL)
             Wearable.getDataClient(activityContext!!).addListener(this)
             Wearable.getMessageClient(activityContext!!).addListener(this)
             Wearable.getCapabilityClient(activityContext!!)

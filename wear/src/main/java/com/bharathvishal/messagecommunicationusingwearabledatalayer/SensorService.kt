@@ -26,6 +26,7 @@ class SensorService : Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
         sensorG = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
         sensorA = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
@@ -68,16 +69,25 @@ class SensorService : Service() {
 
             }
 
+
+
+
              override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
                  TODO("Not yet implemented")
              }
          }
+        sensorManager?.registerListener(mLightSensorListener, sensorG, SensorManager.SENSOR_DELAY_NORMAL)
 
-            return START_STICKY
+
+
+        return START_STICKY
 }
 
 
 fun onStopCommand(intent: Intent, flags: Int, startId: Int): Int{
 TODO("Return the communication channel to the service.")
 }
+    fun initialise(){
+
+    }
 }

@@ -304,7 +304,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             val updateMap: MutableMap<String, Any> = HashMap()
             updateMap["s"] = s
             val db= FirebaseFirestore.getInstance()
-            db.collection("sensorData").add(updateMap)
+           // db.collection("sensorData").add(updateMap)
            // dataUpdate.append(s)
 
 
