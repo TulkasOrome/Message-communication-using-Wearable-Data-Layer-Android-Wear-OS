@@ -70,8 +70,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
-        //setContentView(view)
-        setContentView(R.layout.activity_main)
+        setContentView(view)
+       // setContentView(R.layout.activity_main)
 
         activityContext = this
 
@@ -261,10 +261,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
     override fun onPause() {
         super.onPause()
         try {
-            Wearable.getDataClient(activityContext!!).removeListener(this)
-            Wearable.getMessageClient(activityContext!!).removeListener(this)
-            Wearable.getCapabilityClient(activityContext!!).removeListener(this)
-            sensorManager?.unregisterListener(mLightSensorListener)
+           // Wearable.getDataClient(activityContext!!).removeListener(this)
+         //   Wearable.getMessageClient(activityContext!!).removeListener(this)
+          //  Wearable.getCapabilityClient(activityContext!!).removeListener(this)
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -279,6 +279,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
 
             // starting the service
             startService(Intent(this, SensorService::class.java))
+            Wearable.getDataClient(activityContext!!).addListener(this)
+            Wearable.getMessageClient(activityContext!!).addListener(this)
+            Wearable.getCapabilityClient(activityContext!!)
+                .addListener(this, Uri.parse("wear://"), CapabilityClient.FILTER_REACHABLE)
+
+
         }
 
         // process to be performed
@@ -287,27 +293,25 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
 
             // stopping the service
             stopService(Intent(this, SensorService::class.java))
+            Wearable.getDataClient(activityContext!!).removeListener(this)
+            Wearable.getMessageClient(activityContext!!).removeListener(this)
+            Wearable.getCapabilityClient(activityContext!!).removeListener(this)
+            Log.d("STOPPED", "Stopped")
         }
     }
 
     override fun onResume() {
         super.onResume()
 
-        try {
+
 
 
             //sensorManager?.registerListener(aEventListener, sensorA, SensorManager.SENSOR_DELAY_NORMAL)
-            Wearable.getDataClient(activityContext!!).addListener(this)
-            Wearable.getMessageClient(activityContext!!).addListener(this)
-            Wearable.getCapabilityClient(activityContext!!)
-                .addListener(this, Uri.parse("wear://"), CapabilityClient.FILTER_REACHABLE)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+
     }
 
 
-
+/*
     private val mLightSensorListener: SensorEventListener = object : SensorEventListener {
         @RequiresApi(Build.VERSION_CODES.O)
         override fun onSensorChanged(event: SensorEvent) {
@@ -349,10 +353,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
         override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
             Log.d("MY_APP", "${sensor.id} - $accuracy")
         }
-    }
+    }*/
 
 
-    private val aEventListener: SensorEventListener = object : SensorEventListener {
+  /*  private val aEventListener: SensorEventListener = object : SensorEventListener {
         @RequiresApi(Build.VERSION_CODES.O)
         override fun onSensorChanged(event: SensorEvent) {
             try {
@@ -394,7 +398,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
             Log.d("MY_APP", "${sensor.id} - $accuracy")
         }
     }
-
+*/
    // override fun getAmbientCallback(): AmbientCallback = MyAmbientCallback()
 
    // private inner class MyAmbientCallback : AmbientCallback() {
