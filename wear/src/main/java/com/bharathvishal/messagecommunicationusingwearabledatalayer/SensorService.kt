@@ -18,6 +18,8 @@ import java.time.Instant
 var sensorManager: SensorManager? = null
 var sensorG: Sensor? = null
 var sensorA: Sensor? = null
+var aEventListener: SensorEventListener? = null
+var mLightSensorListener: SensorEventListener? = null
 
 class SensorService : Service() {
 
@@ -28,6 +30,10 @@ class SensorService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
 
         val extras = intent.extras
+        if (extras != null) {
+            Log.d("param", extras.get("Start").toString())
+            Log.d("param2", extras.get("Stop").toString())
+        }
 
 
         if (extras != null) {
@@ -39,8 +45,8 @@ class SensorService : Service() {
                 sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
                 sensorG = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
                 sensorA = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-//changw to global variable 
-                val aEventListener: SensorEventListener = object : SensorEventListener {
+//changw to global variable
+                 aEventListener = object : SensorEventListener {
                     @RequiresApi(Build.VERSION_CODES.O)
                     override fun onSensorChanged(event: SensorEvent) {
                         try {
@@ -67,7 +73,7 @@ class SensorService : Service() {
                         Log.d("MY_APP", "${sensor.id} - $accuracy")
                     }}
 
-                val mLightSensorListener: SensorEventListener = object : SensorEventListener {
+                 mLightSensorListener = object : SensorEventListener {
                     @RequiresApi(Build.VERSION_CODES.O)
                     override fun onSensorChanged(event: SensorEvent) {
                         try {
@@ -104,13 +110,23 @@ class SensorService : Service() {
             }
           else if (extras.get("Stop") == true)  {
 
-
-
+                sensorManager?.unregisterListener(mLightSensorListener)
+                sensorManager?.unregisterListener(aEventListener)
+                stopSelf()
             }
         }
-    return START_NOT_STICKY}
+        return START_NOT_STICKY
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        sensorManager?.unregisterListener(mLightSensorListener)
+        sensorManager?.unregisterListener(aEventListener)
+        stopSelf()
 
 
+    }
 fun onStopCommand(intent: Intent, flags: Int, startId: Int): Int{
 stopSelf()
     return STOP_FOREGROUND_REMOVE

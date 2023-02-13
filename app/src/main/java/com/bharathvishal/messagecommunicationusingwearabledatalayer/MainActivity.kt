@@ -285,6 +285,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
     @SuppressLint("SetTextI18n")
     override fun onMessageReceived(p0: MessageEvent) {
+        if (String(p0.data, StandardCharsets.UTF_8) == "Stopped"){
+            binding.deviceconnectionStatusTv.text = "Stopped but still connected"
+            binding.messagelogTextView.text = "Data Stopped"
+        }
+        if (String(p0.data, StandardCharsets.UTF_8) == "Started"){
+            binding.deviceconnectionStatusTv.text = "Connected"
+            binding.messagelogTextView.text = "Data Incoming"
+        }
         try {
             val s =
                 String(p0.data, StandardCharsets.UTF_8)
@@ -298,6 +306,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                         + " "
                         + s
             )
+
+            Log.d("DEBUG",String(p0.data, StandardCharsets.UTF_8))
 
            // var obj = JSONObject(s)
 
@@ -329,30 +339,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 wearableNodeUri = p0.sourceNodeId
             }
 
-                  //  binding.textInputLayout.visibility = View.VISIBLE
-                 //   binding.sendmessageButton.visibility = View.VISIBLE
-
-                  //  val sbTemp = StringBuilder()
-                   // sbTemp.append("\n")
-                   // sbTemp.append(s)
-                   // sbTemp.append(" - (Received from wearable)")
-                  //  Log.d("receive1", " $sbTemp")
-                  //  binding.messagelogTextView.append(sbTemp)
-
-
-
-                  //  binding.scrollviewText.requestFocus()
-                  //  binding.scrollviewText.post {
-                      //  binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
-                 //   }
-
 
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d("receive1", "Handled")
         }
-
-    }
+        }
 
     override fun onCapabilityChanged(p0: CapabilityInfo) {
     }

@@ -261,7 +261,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
     override fun onPause() {
         super.onPause()
         try {
-           // Wearable.getDataClient(activityContext!!).removeListener(this)
+            com.betterbrick.proofofconcept.MessageSender(
+                "/MessageChannel",
+                "Started",
+                applicationContext
+            ).start()
+            val sintent = Intent(applicationContext, SensorService::class.java)
+            sintent.putExtra("Start", true)
+            // starting the service
+            startService(sintent)
+            Wearable.getDataClient(activityContext!!).addListener(this)
+            Wearable.getMessageClient(activityContext!!).addListener(this)
+            Wearable.getCapabilityClient(activityContext!!)
+                .addListener(this, Uri.parse("wear://"), CapabilityClient.FILTER_REACHABLE)
+
+
+            // Wearable.getDataClient(activityContext!!).removeListener(this)
          //   Wearable.getMessageClient(activityContext!!).removeListener(this)
           //  Wearable.getCapabilityClient(activityContext!!).removeListener(this)
 
@@ -280,7 +295,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
 
         if (view === start) {
 
-
+            com.betterbrick.proofofconcept.MessageSender(
+                "/MessageChannel",
+                "Started",
+                applicationContext
+            ).start()
 
             // starting the service
             startService(sintent)
@@ -295,9 +314,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
         // process to be performed
         // if stop button is clicked
         else if (view === stop) {
-
+            com.betterbrick.proofofconcept.MessageSender(
+                "/MessageChannel",
+                "Stopped",
+                applicationContext
+            ).start()
+            val stopintent = Intent(applicationContext, SensorService::class.java)
+            stopintent.putExtra("Stop", true)
             // stopping the service
-            stopService(Intent(this, SensorService::class.java))
+            stopService(Intent(stopintent))
             Wearable.getDataClient(activityContext!!).removeListener(this)
             Wearable.getMessageClient(activityContext!!).removeListener(this)
             Wearable.getCapabilityClient(activityContext!!).removeListener(this)
@@ -308,10 +333,23 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
     override fun onResume() {
         super.onResume()
 
+        com.betterbrick.proofofconcept.MessageSender(
+            "/MessageChannel",
+            "Started",
+            applicationContext
+        ).start()
+        val sintent = Intent(applicationContext, SensorService::class.java)
+        sintent.putExtra("Start", true)
+        // starting the service
+        startService(sintent)
+        Wearable.getDataClient(activityContext!!).addListener(this)
+        Wearable.getMessageClient(activityContext!!).addListener(this)
+        Wearable.getCapabilityClient(activityContext!!)
+            .addListener(this, Uri.parse("wear://"), CapabilityClient.FILTER_REACHABLE)
 
 
 
-            //sensorManager?.registerListener(aEventListener, sensorA, SensorManager.SENSOR_DELAY_NORMAL)
+        //sensorManager?.registerListener(aEventListener, sensorA, SensorManager.SENSOR_DELAY_NORMAL)
 
     }
 
