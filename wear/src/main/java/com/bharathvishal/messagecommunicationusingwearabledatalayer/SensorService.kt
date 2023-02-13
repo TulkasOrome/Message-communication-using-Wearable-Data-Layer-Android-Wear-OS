@@ -10,7 +10,6 @@ import android.hardware.SensorManager
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import android.view.View
 import androidx.annotation.RequiresApi
 import org.json.JSONException
 import org.json.JSONObject
@@ -28,101 +27,88 @@ class SensorService : Service() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
 
-        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
-        sensorG = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
-        sensorA = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        val extras = intent.extras
 
-        val aEventListener: SensorEventListener = object : SensorEventListener {
-            @RequiresApi(Build.VERSION_CODES.O)
-            override fun onSensorChanged(event: SensorEvent) {
-                try {
-                    val `object` = JSONObject()
-                    `object`.put("accelerometerX", event.values[0].toInt())
-                    `object`.put("accelerometerY", event.values[1].toInt())
-                    `object`.put("accelerometerZ", event.values[2].toInt())
-                    `object`.put("timestamp", Instant.now().toString())
-                    com.betterbrick.proofofconcept.MessageSender(
-                        "/MessageChannel",
-                        `object`.toString(),
-                        applicationContext
-                    ).start()
-                } catch (e: JSONException) {
-                    Log.e(ContentValues.TAG, "Failed to create JSON object")
+
+        if (extras != null) {
+            if (extras.get("Start") == true){
+                Log.d("param", extras.get("Start").toString())
+
+
+
+                sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
+                sensorG = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+                sensorA = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+//changw to global variable 
+                val aEventListener: SensorEventListener = object : SensorEventListener {
+                    @RequiresApi(Build.VERSION_CODES.O)
+                    override fun onSensorChanged(event: SensorEvent) {
+                        try {
+                            val `object` = JSONObject()
+                            `object`.put("accelerometerX", event.values[0].toInt())
+                            `object`.put("accelerometerY", event.values[1].toInt())
+                            `object`.put("accelerometerZ", event.values[2].toInt())
+                            `object`.put("timestamp", Instant.now().toString())
+                            com.betterbrick.proofofconcept.MessageSender(
+                                "/MessageChannel",
+                                `object`.toString(),
+                                applicationContext
+                            ).start()
+                        } catch (e: JSONException) {
+                            Log.e(ContentValues.TAG, "Failed to create JSON object")
+                        }
+
+                        Log.d("MY_APP", event.values[0].toString())
+
+
+                    }
+
+                    override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+                        Log.d("MY_APP", "${sensor.id} - $accuracy")
+                    }}
+
+                val mLightSensorListener: SensorEventListener = object : SensorEventListener {
+                    @RequiresApi(Build.VERSION_CODES.O)
+                    override fun onSensorChanged(event: SensorEvent) {
+                        try {
+                            val `object` = JSONObject()
+                            `object`.put("gyroscopeX ", event.values[0].toInt())
+                            `object`.put("gyroscopeY ", event.values[1].toInt())
+                            `object`.put("gyroscopeZ ", event.values[2].toInt())
+                            `object`.put("timestamp", Instant.now().toString())
+                            com.betterbrick.proofofconcept.MessageSender(
+                                "/MessageChannel",
+                                `object`.toString(),
+                                applicationContext
+                            ).start()
+                        } catch (e: JSONException) {
+                            Log.e(ContentValues.TAG, "Failed to create JSON object")
+                        }
+
+                        Log.d("MY_APP", event.values[0].toString())
+
+
+                    }
+
+
+                    override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+                        Log.d("MY_APP", "${sensor.id} - $accuracy")
+                    }
                 }
+                sensorManager?.registerListener(mLightSensorListener, sensorG, SensorManager.SENSOR_DELAY_NORMAL)
+                sensorManager?.registerListener(aEventListener, sensorA, SensorManager.SENSOR_DELAY_NORMAL)
 
-                Log.d("MY_APP", event.values[0].toString())
-               /* if (mobileDeviceConnected) {
 
-                    val nodeId: String = messageEvent?.sourceNodeId!!
-                    // Set the data of the message to be the bytes of the Uri.
-                    //  val payload: ByteArray =
-                    // event.values[0].toString().toByteArray()
 
-                    // Send the rpc
-                    // Instantiates clients without member variables, as clients are inexpensive to
-                    // create. (They are cached and shared between GoogleApi instances.)
-                    // val sendMessageTask =
-                    // Wearable.getMessageClient(activityContext!!)
-                    //.sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
+                return START_STICKY
+            }
+          else if (extras.get("Stop") == true)  {
 
-                    binding.deviceconnectionStatusTv.visibility = View.GONE*/
-                }
-            override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
-                Log.d("MY_APP", "${sensor.id} - $accuracy")
-            }}
 
-         val mLightSensorListener: SensorEventListener = object : SensorEventListener {
-            @RequiresApi(Build.VERSION_CODES.O)
-            override fun onSensorChanged(event: SensorEvent) {
-                try {
-                    val `object` = JSONObject()
-                    `object`.put("gyroscopeX ", event.values[0].toInt())
-                    `object`.put("gyroscopeY ", event.values[1].toInt())
-                    `object`.put("gyroscopeZ ", event.values[2].toInt())
-                    `object`.put("timestamp", Instant.now().toString())
-                    com.betterbrick.proofofconcept.MessageSender(
-                        "/MessageChannel",
-                        `object`.toString(),
-                        applicationContext
-                    ).start()
-                } catch (e: JSONException) {
-                    Log.e(ContentValues.TAG, "Failed to create JSON object")
-                }
-
-                Log.d("MY_APP", event.values[0].toString())
-                /* if (mobileDeviceConnected) {
-
-                     val nodeId: String = messageEvent?.sourceNodeId!!
-                     // Set the data of the message to be the bytes of the Uri.
-                     val payload: ByteArray =
-                         event.values[0].toString().toByteArray()
-
-                     // Send the rpc
-                     // Instantiates clients without member variables, as clients are inexpensive to
-                     // create. (They are cached and shared between GoogleApi instances.)
-                     val sendMessageTask =
-                         Wearable.getMessageClient(activityContext!!)
-                             .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
-
-                     binding.deviceconnectionStatusTv.visibility = View.GONE
-                 }*/
 
             }
-
-
-
-
-             override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
-                 Log.d("MY_APP", "${sensor.id} - $accuracy")
-             }
-         }
-        sensorManager?.registerListener(mLightSensorListener, sensorG, SensorManager.SENSOR_DELAY_NORMAL)
-        sensorManager?.registerListener(aEventListener, sensorA, SensorManager.SENSOR_DELAY_NORMAL)
-
-
-
-        return START_STICKY
-}
+        }
+    return START_NOT_STICKY}
 
 
 fun onStopCommand(intent: Intent, flags: Int, startId: Int): Int{
@@ -131,5 +117,4 @@ stopSelf()
     }
     fun initialise(){
 
-    }
-}
+    }}

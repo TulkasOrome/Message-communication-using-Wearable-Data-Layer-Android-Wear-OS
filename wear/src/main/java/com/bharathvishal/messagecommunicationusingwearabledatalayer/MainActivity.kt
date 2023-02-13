@@ -275,10 +275,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
 
         // process to be performed
         // if start button is clicked
+        val sintent = Intent(applicationContext, SensorService::class.java)
+        sintent.putExtra("Start", true)
+
         if (view === start) {
 
+
+
             // starting the service
-            startService(Intent(this, SensorService::class.java))
+            startService(sintent)
             Wearable.getDataClient(activityContext!!).addListener(this)
             Wearable.getMessageClient(activityContext!!).addListener(this)
             Wearable.getCapabilityClient(activityContext!!)
