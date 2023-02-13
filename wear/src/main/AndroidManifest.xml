@@ -16,7 +16,8 @@
         <service
             android:name=".SensorService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"
+            android:permission="TODO" />
 
         <uses-library
             android:name="com.google.android.wearable"

@@ -28,7 +28,7 @@ import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import java.time.Instant
 
-class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider, View.OnClickListener,
+class MainActivity : AppCompatActivity(), View.OnClickListener,
     DataClient.OnDataChangedListener,
     MessageClient.OnMessageReceivedListener,
     CapabilityClient.OnCapabilityChangedListener {
@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     private var messageEvent: MessageEvent? = null
     private var mobileNodeUri: String? = null
 
-    private lateinit var ambientController: AmbientModeSupport.AmbientController
+   // private lateinit var ambientController: AmbientModeSupport.AmbientController
 
     var textView: TextView? = null
     var sensorManager: SensorManager? = null
@@ -59,49 +59,44 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     var sensorA: Sensor? = null
     private var start: Button? = null
     private var stop: Button? = null
+   //val start = findViewById<View>(R.id.startButton) as? Button
+   // val stop = findViewById<View>(R.id.stopButton) as? Button
 
     //textView = findViewById<TextView>(R.id.text_view);
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        start = findViewById<View>(R.id.start) as Button
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        //setContentView(view)
+        setContentView(R.layout.activity_main)
+
+        activityContext = this
+
+
+        start = findViewById<View>(R.id.startButton) as Button
 
         // assigning ID of stopButton
         // to the object stop
-        stop = findViewById<View>(R.id.stop) as Button
+         stop = findViewById<View>(R.id.stopButton) as Button
 
         start!!.setOnClickListener(this)
         stop!!.setOnClickListener(this)
 
-        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
-        sensorG = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
-        sensorA = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+       // sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
+       // sensorG = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+      //  sensorA = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
 
 
-        super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
-
-        activityContext = this
 
         // Enables Always-on
-        ambientController = AmbientModeSupport.attach(this)
+     //   ambientController = AmbientModeSupport.attach(this)
 
         //sensor variables
 
-        binding.stopButton.setOnClickListener {
-            Log.d("TEST", "TEST")
-            Wearable.getDataClient(activityContext!!).removeListener(this)
-            Wearable.getMessageClient(activityContext!!).removeListener(this)
-            Wearable.getCapabilityClient(activityContext!!).removeListener(this)
-            sensorManager?.unregisterListener(mLightSensorListener)
-            sensorManager?.unregisterListener(aEventListener)
-
-
-        }
 
 
         //On click listener for sendmessage button
@@ -297,6 +292,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
     override fun onResume() {
         super.onResume()
+
         try {
 
 
@@ -399,20 +395,20 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         }
     }
 
-    override fun getAmbientCallback(): AmbientCallback = MyAmbientCallback()
+   // override fun getAmbientCallback(): AmbientCallback = MyAmbientCallback()
 
-    private inner class MyAmbientCallback : AmbientCallback() {
-        override fun onEnterAmbient(ambientDetails: Bundle) {
-            super.onEnterAmbient(ambientDetails)
-        }
+   // private inner class MyAmbientCallback : AmbientCallback() {
+    //    override fun onEnterAmbient(ambientDetails: Bundle) {
+    //        super.onEnterAmbient(ambientDetails)
+    //    }
 
-        override fun onUpdateAmbient() {
-            super.onUpdateAmbient()
-        }
+    //    override fun onUpdateAmbient() {
+    //        super.onUpdateAmbient()
+     //   }
 
-        override fun onExitAmbient() {
-            super.onExitAmbient()
-        }
-    }
+      //  override fun onExitAmbient() {
+      //      super.onExitAmbient()
+      //  }
+   // }
 
 }

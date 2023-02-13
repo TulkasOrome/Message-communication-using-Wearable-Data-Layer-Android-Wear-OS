@@ -72,8 +72,8 @@ class SensorService : Service() {
 
 
 
-             override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-                 TODO("Not yet implemented")
+             override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+                 Log.d("MY_APP", "${sensor.id} - $accuracy")
              }
          }
         sensorManager?.registerListener(mLightSensorListener, sensorG, SensorManager.SENSOR_DELAY_NORMAL)
