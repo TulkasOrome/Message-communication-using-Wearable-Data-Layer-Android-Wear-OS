@@ -286,15 +286,14 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     fun createDataStream(data: String) {
         //add to array until array total = 100
         //if array = 100 - delete last and add next
-        val dataStream = arrayOf("")
+        val dataStream: MutableList<String> = mutableListOf("");
         if (dataStream.size <= 200) {
             dataStream.plus(data)
-        }
-        else if (dataStream.size == 200)
-        {
-           dataStream. = remove(dataStream, dataStream.last())
+        } else if (dataStream.size == 200) {
+            dataStream.removeLast()
 
-    }}
+        }
+    }
 
 
     @SuppressLint("SetTextI18n")
@@ -331,6 +330,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             db.collection("sensorData").add(updateMap)
             dataUpdate.append(s)
             createDataStream(s)
+
+
 
 
 
