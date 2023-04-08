@@ -206,7 +206,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
                             binding.messagelogTextView.visibility = View.VISIBLE
 
                             val sbTemp = StringBuilder()
-                            sbTemp.append("\nMobile device connected.")
+                           // sbTemp.append("\nSending.")
                             Log.d("receive1", " $sbTemp")
                             binding.messagelogTextView.append(sbTemp)
 
@@ -261,15 +261,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
     override fun onPause() {
         super.onPause()
         try {
-            com.betterbrick.proofofconcept.MessageSender(
-                "/MessageChannel",
-                "Started",
-                applicationContext
-            ).start()
-            val sintent = Intent(applicationContext, SensorService::class.java)
-            sintent.putExtra("Start", true)
+         //   com.betterbrick.proofofconcept.MessageSender(
+          ////      "/MessageChannel",
+           //     "Started",
+           //     applicationContext
+          //  ).start()
+          //  val sintent = Intent(applicationContext, SensorService::class.java)
+          //  sintent.putExtra("Start", true)
             // starting the service
-            startService(sintent)
+           // startService(sintent)
             Wearable.getDataClient(activityContext!!).addListener(this)
             Wearable.getMessageClient(activityContext!!).addListener(this)
             Wearable.getCapabilityClient(activityContext!!)
@@ -286,6 +286,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onClick(view: View) {
 
         // process to be performed
@@ -300,9 +301,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
                 "Started",
                 applicationContext
             ).start()
+            val sbTemp = StringBuilder()
+            sbTemp.append("\nSending.")
+            Log.d("receive1", " $sbTemp")
+            binding.messagelogTextView.append(sbTemp)
 
             // starting the service
-            startService(sintent)
+            startForegroundService(sintent)
             Wearable.getDataClient(activityContext!!).addListener(this)
             Wearable.getMessageClient(activityContext!!).addListener(this)
             Wearable.getCapabilityClient(activityContext!!)
@@ -319,6 +324,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
                 "Stopped",
                 applicationContext
             ).start()
+            val sbTemp = StringBuilder()
+            sbTemp.append("\nStopped.")
+            Log.d("receive1", " $sbTemp")
+            binding.messagelogTextView.append(sbTemp)
+
             val stopintent = Intent(applicationContext, SensorService::class.java)
             stopintent.putExtra("Stop", true)
             // stopping the service
@@ -330,18 +340,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
 
-        com.betterbrick.proofofconcept.MessageSender(
-            "/MessageChannel",
-            "Started",
-            applicationContext
-        ).start()
-        val sintent = Intent(applicationContext, SensorService::class.java)
-        sintent.putExtra("Start", true)
+       // com.betterbrick.proofofconcept.MessageSender(
+         //   "/MessageChannel",
+          //  "Started",
+          //  applicationContext
+       // ).start()
+      //  val sintent = Intent(applicationContext, SensorService::class.java)
+       // sintent.putExtra("Start", true)
         // starting the service
-        startService(sintent)
+      //  startService(sintent)
         Wearable.getDataClient(activityContext!!).addListener(this)
         Wearable.getMessageClient(activityContext!!).addListener(this)
         Wearable.getCapabilityClient(activityContext!!)

@@ -283,6 +283,20 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     override fun onDataChanged(p0: DataEventBuffer) {
     }
 
+    fun createDataStream(data: String) {
+        //add to array until array total = 100
+        //if array = 100 - delete last and add next
+        val dataStream = arrayOf("")
+        if (dataStream.size <= 200) {
+            dataStream.plus(data)
+        }
+        else if (dataStream.size == 200)
+        {
+           dataStream. = remove(dataStream, dataStream.last())
+
+    }}
+
+
     @SuppressLint("SetTextI18n")
     override fun onMessageReceived(p0: MessageEvent) {
         if (String(p0.data, StandardCharsets.UTF_8) == "Stopped"){
@@ -314,8 +328,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             val updateMap: MutableMap<String, Any> = HashMap()
             updateMap["s"] = s
             val db= FirebaseFirestore.getInstance()
-           // db.collection("sensorData").add(updateMap)
-           // dataUpdate.append(s)
+            db.collection("sensorData").add(updateMap)
+            dataUpdate.append(s)
+            createDataStream(s)
 
 
 
@@ -350,17 +365,18 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     }
 
 
+
     override fun onPause() {
         super.onPause()
-        try {
-            Wearable.getDataClient(activityContext!!).removeListener(this)
-            Wearable.getMessageClient(activityContext!!).removeListener(this)
-            Wearable.getCapabilityClient(activityContext!!).removeListener(this)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        // try {
+        // Wearable.getDataClient(activityContext!!).removeListener(this)
+        // Wearable.getMessageClient(activityContext!!).removeListener(this)
+        // Wearable.getCapabilityClient(activityContext!!).removeListener(this)
+        //  } catch (e: Exception) {
+        //   e.printStackTrace()
+        // }
+        // }
     }
-
 
     override fun onResume() {
         super.onResume()
