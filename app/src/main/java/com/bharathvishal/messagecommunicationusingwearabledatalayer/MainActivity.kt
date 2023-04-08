@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
     private lateinit var binding: ActivityMainBinding
     public val dataUpdate = StringBuilder()
+    var dataStream = ArrayList<String>()
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -283,18 +284,48 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     override fun onDataChanged(p0: DataEventBuffer) {
     }
 
-    fun createDataStream(data: String) {
-        //add to array until array total = 100
-        //if array = 100 - delete last and add next
-        val dataStream: MutableList<String> = mutableListOf("");
-        if (dataStream.size <= 200) {
-            dataStream.plus(data)
-        } else if (dataStream.size == 200) {
-            dataStream.removeLast()
 
+
+    fun createDataStream(data: String) {
+
+        if (dataStream.size <= 50) {
+             dataStream.add(data)
+             checkForDelta(dataStream)
+        } else if (dataStream.size == 50) {
+            dataStream.removeLast()
         }
     }
 
+    fun checkForDelta(arr: ArrayList<String>){
+        for(item in arr){
+            if (item.contains("gyroscope")){
+                val gyroFindX = item.indexOf("X")
+                val gyroXStart = gyroFindX + 4
+                var isComma = ' '
+                loop@ while (isComma != ','){
+                  val i1 = item[gyroXStart]
+                    val check = item[gyroXStart + 1]
+                   if (item[gyroXStart+1] == ','){
+                      isComma = ','
+                }
+                    else if (item[gyroXStart+2] == ','){
+                       val i2 = item[gyroXStart] + 1
+                        isComma = item[gyroXStart+2]
+                }
+                   else if (item[gyroXStart+3] == ','){
+                     val i3 = item[gyroXStart] + 2
+                       isComma = item[gyroXStart+3]
+                }
+                   else if (item[gyroXStart+4] == ','){
+                       val i4 = item[gyroXStart] + 3
+                       isComma = item[gyroXStart+4]
+                   }}
+
+                //val gyroXEnd = item.indexOf(gyroXStart)
+
+            }
+        }
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onMessageReceived(p0: MessageEvent) {
