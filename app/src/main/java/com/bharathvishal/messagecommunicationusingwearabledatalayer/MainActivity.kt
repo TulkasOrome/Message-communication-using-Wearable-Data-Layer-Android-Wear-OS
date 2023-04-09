@@ -295,33 +295,77 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             dataStream.removeLast()
         }
     }
+    var isComma = ' '
+    var x1 = ' '
+    var x2 = ' '
+    var x3= ' '
+    var x4= ' '
+    var y1= ' '
+    var y2= ' '
+    var y3= ' '
+    var y4= ' '
+    var x = ' '
+
+    fun String.addCharAtIndex(char: Char, index: Int) =
+        StringBuilder(this).apply { insert(index, char) }.toString()
 
     fun checkForDelta(arr: ArrayList<String>){
+        var isComma = ' '
         for(item in arr){
             if (item.contains("gyroscope")){
                 val gyroFindX = item.indexOf("X")
                 val gyroXStart = gyroFindX + 4
-                var isComma = ' '
-                loop@ while (isComma != ','){
-                  val i1 = item[gyroXStart]
+                 while (isComma != ','){
+                   x1 = item[gyroXStart]
                     val check = item[gyroXStart + 1]
-                   if (item[gyroXStart+1] == ','){
+                    if (item[gyroXStart+1] == ','){
                       isComma = ','
                 }
                     else if (item[gyroXStart+2] == ','){
-                       val i2 = item[gyroXStart] + 1
+                        x2 = item[gyroXStart + 1]
                         isComma = item[gyroXStart+2]
                 }
                    else if (item[gyroXStart+3] == ','){
-                     val i3 = item[gyroXStart] + 2
+                      x3 = item[gyroXStart + 2]
                        isComma = item[gyroXStart+3]
                 }
                    else if (item[gyroXStart+4] == ','){
-                       val i4 = item[gyroXStart] + 3
+                        x4 = item[gyroXStart + 3]
                        isComma = item[gyroXStart+4]
                    }}
+                if (x2 != null){
+                 var x = x.addCharAtIndex(x1, 0).addCharAtIndex(x2, 1)
 
-                //val gyroXEnd = item.indexOf(gyroXStart)
+                }
+
+                print(x)
+
+
+
+            }
+            else if (item.contains("gyroscope")){
+                val gyroFindY = item.indexOf("Y")
+                val gyroYStart = gyroFindY + 4
+                while (isComma != ','){
+                    val y1 = item[gyroYStart]
+                    val check = item[gyroYStart + 1]
+                    if (item[gyroYStart+1] == ','){
+                        isComma = ','
+                    }
+                    else if (item[gyroYStart+2] == ','){
+                        val y2 = item[gyroYStart] + 1
+                        isComma = item[gyroYStart+2]
+                    }
+                    else if (item[gyroYStart+3] == ','){
+                        val y3 = item[gyroYStart] + 2
+                        isComma = item[gyroYStart+3]
+                    }
+                    else if (item[gyroYStart+4] == ','){
+                        val y4 = item[gyroYStart] + 3
+                        isComma = item[gyroYStart+4]
+                    }}
+
+
 
             }
         }
@@ -360,6 +404,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             val db= FirebaseFirestore.getInstance()
             db.collection("sensorData").add(updateMap)
             dataUpdate.append(s)
+
             createDataStream(s)
 
 
