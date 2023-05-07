@@ -57,6 +57,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
     var sensorManager: SensorManager? = null
     var sensorG: Sensor? = null
     var sensorA: Sensor? = null
+    var sensorLA: Sensor? = null
+    var sensorRV: Sensor? = null
     private var start: Button? = null
     private var stop: Button? = null
    //val start = findViewById<View>(R.id.startButton) as? Button

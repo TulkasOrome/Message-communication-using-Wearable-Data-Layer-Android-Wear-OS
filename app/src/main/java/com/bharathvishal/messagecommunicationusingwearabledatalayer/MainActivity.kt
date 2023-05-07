@@ -286,7 +286,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
 
 
-    fun createDataStream(data: String) {
+  /*  fun createDataStream(data: String) {
 
         if (dataStream.size <= 50) {
              dataStream.add(data)
@@ -304,12 +304,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     var y2= ' '
     var y3= ' '
     var y4= ' '
-    var x = ' '
+*/
 
-    fun String.addCharAtIndex(char: Char, index: Int) =
-        StringBuilder(this).apply { insert(index, char) }.toString()
+   // fun String.addCharAtIndex(char: Char, index: Int) =
+      //  StringBuilder(this).apply { insert(index, char) }.toString()
 
-    fun checkForDelta(arr: ArrayList<String>){
+    /*fun checkForDelta(arr: ArrayList<String>){
+        var x = ""
         var isComma = ' '
         for(item in arr){
             if (item.contains("gyroscope")){
@@ -334,7 +335,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                        isComma = item[gyroXStart+4]
                    }}
                 if (x2 != null){
-                 var x = x.addCharAtIndex(x1, 0).addCharAtIndex(x2, 1)
+                  x = x.addCharAtIndex(x1, 0)
+                  x = x.addCharAtIndex(x2, 1)
 
                 }
 
@@ -369,13 +371,15 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
             }
         }
-    }
+        }
+  */
 
     @SuppressLint("SetTextI18n")
     override fun onMessageReceived(p0: MessageEvent) {
         if (String(p0.data, StandardCharsets.UTF_8) == "Stopped"){
             binding.deviceconnectionStatusTv.text = "Stopped but still connected"
             binding.messagelogTextView.text = "Data Stopped"
+
         }
         if (String(p0.data, StandardCharsets.UTF_8) == "Started"){
             binding.deviceconnectionStatusTv.text = "Connected"
@@ -405,7 +409,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             db.collection("sensorData").add(updateMap)
             dataUpdate.append(s)
 
-            createDataStream(s)
+        //    createDataStream(s)
 
 
 

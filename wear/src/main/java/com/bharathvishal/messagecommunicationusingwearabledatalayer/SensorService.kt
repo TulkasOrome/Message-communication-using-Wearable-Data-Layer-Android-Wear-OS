@@ -23,8 +23,12 @@ import java.time.Instant
 var sensorManager: SensorManager? = null
 var sensorG: Sensor? = null
 var sensorA: Sensor? = null
+var sensorLA: Sensor? = null
+var sensorRV: Sensor? = null
 var aEventListener: SensorEventListener? = null
 var mLightSensorListener: SensorEventListener? = null
+var LAeventListener: SensorEventListener? = null
+var RVeventListener: SensorEventListener? = null
 
 class SensorService : Service() {
 
@@ -84,8 +88,66 @@ class SensorService : Service() {
                 sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
                 sensorG = sensorManager?.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
                 sensorA = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-//changw to global variable
-                 aEventListener = object : SensorEventListener {
+                sensorRV = sensorManager?.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+                sensorLA = sensorManager?.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
+
+                LAeventListener = object : SensorEventListener {
+                    @RequiresApi(Build.VERSION_CODES.O)
+                    override fun onSensorChanged(event: SensorEvent) {
+                        try {
+                            val `object` = JSONObject()
+                            `object`.put("linearAccelX", event.values[0].toInt())
+                            `object`.put("linearAccelY", event.values[1].toInt())
+                            `object`.put("linearAccelZ", event.values[2].toInt())
+                            `object`.put("timestamp", Instant.now().toString())
+                            com.betterbrick.proofofconcept.MessageSender(
+                                "/MessageChannel",
+                                `object`.toString(),
+                                applicationContext
+                            ).start()
+                        } catch (e: JSONException) {
+                            Log.e(ContentValues.TAG, "Failed to create JSON object")
+                        }
+
+                        Log.d("MY_APP", event.values[0].toString())
+
+
+                    }
+
+                    override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+                        Log.d("MY_APP", "${sensor.id} - $accuracy")
+                    }}
+
+                RVeventListener = object : SensorEventListener {
+                    @RequiresApi(Build.VERSION_CODES.O)
+                    override fun onSensorChanged(event: SensorEvent) {
+                        try {
+                            val `object` = JSONObject()
+                            `object`.put("rotationVectorX", event.values[0].toInt())
+                            `object`.put("rotationVectorY", event.values[1].toInt())
+                            `object`.put("rotationVectorZ", event.values[2].toInt())
+                            `object`.put("timestamp", Instant.now().toString())
+                            com.betterbrick.proofofconcept.MessageSender(
+                                "/MessageChannel",
+                                `object`.toString(),
+                                applicationContext
+                            ).start()
+                        } catch (e: JSONException) {
+                            Log.e(ContentValues.TAG, "Failed to create JSON object")
+                        }
+
+                        Log.d("MY_APP", event.values[0].toString())
+
+
+                    }
+
+                    override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+                        Log.d("MY_APP", "${sensor.id} - $accuracy")
+                    }}
+
+
+
+                aEventListener = object : SensorEventListener {
                     @RequiresApi(Build.VERSION_CODES.O)
                     override fun onSensorChanged(event: SensorEvent) {
                         try {
@@ -142,6 +204,8 @@ class SensorService : Service() {
                 }
                 sensorManager?.registerListener(mLightSensorListener, sensorG, SensorManager.SENSOR_DELAY_NORMAL)
                 sensorManager?.registerListener(aEventListener, sensorA, SensorManager.SENSOR_DELAY_NORMAL)
+                sensorManager?.registerListener(LAeventListener, sensorG, SensorManager.SENSOR_DELAY_NORMAL)
+                sensorManager?.registerListener(RVeventListener, sensorA, SensorManager.SENSOR_DELAY_NORMAL)
 
 
 
@@ -151,6 +215,8 @@ class SensorService : Service() {
 
                 sensorManager?.unregisterListener(mLightSensorListener)
                 sensorManager?.unregisterListener(aEventListener)
+                sensorManager?.unregisterListener(LAeventListener)
+                sensorManager?.unregisterListener(RVeventListener)
                 stopSelf()
             }
         }
@@ -160,6 +226,8 @@ class SensorService : Service() {
     override fun onDestroy() {
         super.onDestroy()
 
+        sensorManager?.unregisterListener(LAeventListener)
+        sensorManager?.unregisterListener(RVeventListener)
         sensorManager?.unregisterListener(mLightSensorListener)
         sensorManager?.unregisterListener(aEventListener)
         stopSelf()
