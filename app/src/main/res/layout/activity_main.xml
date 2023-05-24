@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    >
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbarlayout"
@@ -88,6 +89,17 @@
                     android:textSize="15sp"
                     android:visibility="gone" />
 
+                <TextView
+                    android:id="@+id/httpresponse"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:scrollbars="vertical"
+                    android:text="@string/httpresp"
+                    android:textSize="15sp"
+                    android:visibility="visible" />
+
+
             </LinearLayout>
 
 
@@ -102,7 +114,7 @@
                     android:id="@+id/textInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/message"
+                    android:text="@string/message"
                     android:visibility="gone">
 
                     <com.google.android.material.textfield.TextInputEditText

@@ -3,18 +3,17 @@ package com.betterbrick.proofofconcept
 import android.Manifest.permission.*
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentValues.TAG
 import android.content.Context
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
-import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.betterbrick.proofofconcept.databinding.ActivityMainBinding
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
@@ -24,6 +23,9 @@ import java.io.File
 import java.io.FileWriter
 import java.nio.charset.StandardCharsets
 import java.util.*
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject
 
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
@@ -374,16 +376,69 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }
   */
 
+    fun httpReq(){
+        val volleyQueue = Volley.newRequestQueue(this)
+        val url = "https://bbpoc2-dot-betterbricks.ts.r.appspot.com/algo"
+        //val url = "http://10.0.2.2:5000/algo"
+
+        val jsonObjectRequest = JsonObjectRequest(
+            // we are using GET HTTP request method
+            Request.Method.GET,
+            // url we want to send the HTTP request to
+            url,
+            // this parameter is used to send a JSON object
+            // to the server, since this is not required in
+            // our case, we are keeping it `null`
+            null,
+
+            // lambda function for handling the case
+            // when the HTTP request succeeds
+            { response ->
+                // get the image url from the JSON object
+
+                //val json = response["response"]
+                Log.d(TAG, response.toString());
+                binding.httpresponse.text = response.toString()
+
+
+
+                // load the image into the ImageView using Glide.
+
+
+            },
+
+            // lambda function for handling the
+            // case when the HTTP request fails
+            { error ->
+                // make a Toast telling the user
+                // that something went wrong
+                Toast.makeText(this, "An error occured getting brick count from the backend service", Toast.LENGTH_LONG).show()
+                // log the error message in the error stream
+                Log.e("MainActivity", "Backend Connection Error error: ${error.localizedMessage}")
+            }
+        )
+
+        // add the json request object created
+        // above to the Volley request queue
+        volleyQueue.add(jsonObjectRequest)
+
+    }
+
+
     @SuppressLint("SetTextI18n")
     override fun onMessageReceived(p0: MessageEvent) {
         if (String(p0.data, StandardCharsets.UTF_8) == "Stopped"){
             binding.deviceconnectionStatusTv.text = "Stopped but still connected"
             binding.messagelogTextView.text = "Data Stopped"
+            binding.httpresponse.text = "Bricks"
+            httpReq()
+
 
         }
         if (String(p0.data, StandardCharsets.UTF_8) == "Started"){
             binding.deviceconnectionStatusTv.text = "Connected"
             binding.messagelogTextView.text = "Data Incoming"
+
         }
         try {
             val s =
@@ -406,8 +461,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             val updateMap: MutableMap<String, Any> = HashMap()
             updateMap["s"] = s
             val db= FirebaseFirestore.getInstance()
-            db.collection("sensorData").add(updateMap)
-            dataUpdate.append(s)
+            //db.collection("sensorData").add(updateMap)
+           // dataUpdate.append(s)
 
         //    createDataStream(s)
 

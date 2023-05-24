@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:background="?CardBGColor"
     android:padding="9dp"
-    tools:deviceIds="wear">
+    tools:deviceIds="wear"
+    >
 
     <FrameLayout
         android:layout_width="match_parent"

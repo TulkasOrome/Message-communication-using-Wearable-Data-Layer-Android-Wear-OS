@@ -12,4 +12,5 @@
     <string name="data_incomming">...</string>
     <string name="stop">Stop and Save</string>
     <string name="save">Save</string>
+    <string name="httpresp">Bricks</string>
 </resources>
