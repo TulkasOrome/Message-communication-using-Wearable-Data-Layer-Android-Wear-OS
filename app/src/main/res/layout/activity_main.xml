@@ -89,15 +89,6 @@
                     android:textSize="15sp"
                     android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/httpresponse"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:scrollbars="vertical"
-                    android:text="@string/httpresp"
-                    android:textSize="15sp"
-                    android:visibility="visible" />
 
 
             </LinearLayout>
@@ -108,6 +99,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:orientation="vertical">
+
+                <TextView
+                    android:textStyle="bold|italic"
+                    android:id="@+id/httpresponse"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:scrollbars="vertical"
+                    android:text="@string/httpresp"
+                    android:textSize="18sp"
+                    android:visibility="visible" />
+
 
 
                 <com.google.android.material.textfield.TextInputLayout

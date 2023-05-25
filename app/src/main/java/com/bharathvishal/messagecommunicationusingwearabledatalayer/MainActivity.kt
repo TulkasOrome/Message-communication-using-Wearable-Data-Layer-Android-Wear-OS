@@ -6,32 +6,34 @@ import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
+import android.os.StrictMode.ThreadPolicy
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.Request
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.RequestFuture
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.betterbrick.proofofconcept.databinding.ActivityMainBinding
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.*
+import java.io.BufferedReader
 import java.io.File
 import java.io.FileWriter
+import java.io.InputStreamReader
+import java.net.URL
 import java.nio.charset.StandardCharsets
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import java.util.*
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject
-
 
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
+
 
     DataClient.OnDataChangedListener,
     MessageClient.OnMessageReceivedListener,
@@ -55,6 +57,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private lateinit var binding: ActivityMainBinding
     public val dataUpdate = StringBuilder()
     var dataStream = ArrayList<String>()
+
 
 
 
@@ -383,61 +386,83 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
 
 
-    fun httpReq(){
+   // fun httpReq(){
 
 
-        val volleyQueue = Volley.newRequestQueue(this)
-        val url = "https://bbpoc2-dot-betterbricks.ts.r.appspot.com/algo"
+      //  val volleyQueue = Volley.newRequestQueue(this)
+     //   val url = "https://bbpoc2-dot-betterbricks.ts.r.appspot.com/algo"
 
        
-        //val url = "http://10.0.2.2:5000/algo"
+       // val url = "https://127.0.0.1:5000/algo"
 
-        val jsonObjectRequest = JsonObjectRequest(
+     //   val jsonObjectRequest = JsonObjectRequest(
             // we are using GET HTTP request method
-            Request.Method.GET,
+          //  Request.Method.GET,
             // url we want to send the HTTP request to
-            url,
+         //   url,
             // this parameter is used to send a JSON object
             // to the server, since this is not required in
             // our case, we are keeping it `null`
-            null,
+         //   null,
 
             // lambda function for handling the case
             // when the HTTP request succeeds
-            { response ->
+          //  { response ->
                 // get the image url from the JSON object
 
                 //val json = response["response"]
-                Log.d(TAG, response.getString("bricks"));
-                binding.httpresponse.text = response.getString("bricks")
+              //  Log.d(TAG, response.getJSONObject("bricks").toString())
+             //   binding.httpresponse.text = response.getJSONObject("bricks").toString()
 
-            },
+         //   },
 
             // lambda function for handling the
             // case when the HTTP request fails
-            { error ->
+           // { error ->
                 // make a Toast telling the user
                 // that something went wrong
-                Toast.makeText(this, "An error occured getting brick count from the backend service", Toast.LENGTH_LONG).show()
+              //  Toast.makeText(this, "An error occured getting brick count from the backend service", Toast.LENGTH_LONG).show()
                 // log the error message in the error stream
-                Log.e("MainActivity", "Backend Connection Error error: ${error.localizedMessage}")
-            }
-        )
+              //  Log.e("MainActivity", "Backend Connection Error error: ${error.localizedMessage}")
+           // }
+      // )
 
         // add the json request object created
         // above to the Volley request queue
-        volleyQueue.add(jsonObjectRequest)
+       // volleyQueue.add(jsonObjectRequest)
 
+   // }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @SuppressLint("SetTextI18n")
+    fun sendGetRequest() {
+
+        val url = URL("https://bbpoc2-dot-betterbricks.ts.r.appspot.com/algo")
+        val connection = url.openConnection()
+        BufferedReader(InputStreamReader(connection.getInputStream())).use { inp ->
+            var line: String?
+            while (inp.readLine().also { line = it } != null) {
+                binding.httpresponse.text = "Bricks  " + line + "\n" + "Completed  " + DateTimeFormatter
+                    .ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")
+                    .withZone(ZoneOffset.ofHours(10))
+                    .format(Instant.now())
+            }
+        }
     }
 
 
+
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
     override fun onMessageReceived(p0: MessageEvent) {
         if (String(p0.data, StandardCharsets.UTF_8) == "Stopped"){
+            val policy = ThreadPolicy.Builder().permitAll().build()
+            StrictMode.setThreadPolicy(policy)
             binding.deviceconnectionStatusTv.text = "Stopped but still connected"
             binding.messagelogTextView.text = "Data Stopped"
             binding.httpresponse.text = "Bricks"
-            httpReq()
+            sendGetRequest()
+
 
 
         }
@@ -467,7 +492,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             val updateMap: MutableMap<String, Any> = HashMap()
             updateMap["s"] = s
             val db= FirebaseFirestore.getInstance()
-            //db.collection("sensorData").add(updateMap)
+            db.collection("sensorData").add(updateMap)
            // dataUpdate.append(s)
 
         //    createDataStream(s)
