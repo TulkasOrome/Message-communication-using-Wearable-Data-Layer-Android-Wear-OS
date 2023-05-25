@@ -13,6 +13,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.RequestFuture
+import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.betterbrick.proofofconcept.databinding.ActivityMainBinding
 import com.google.android.gms.tasks.Tasks
@@ -26,6 +28,7 @@ import java.util.*
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject
+
 
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
@@ -52,6 +55,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private lateinit var binding: ActivityMainBinding
     public val dataUpdate = StringBuilder()
     var dataStream = ArrayList<String>()
+
+
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -376,9 +381,15 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }
   */
 
+
+
     fun httpReq(){
+
+
         val volleyQueue = Volley.newRequestQueue(this)
         val url = "https://bbpoc2-dot-betterbricks.ts.r.appspot.com/algo"
+
+       
         //val url = "http://10.0.2.2:5000/algo"
 
         val jsonObjectRequest = JsonObjectRequest(
@@ -397,13 +408,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 // get the image url from the JSON object
 
                 //val json = response["response"]
-                Log.d(TAG, response.toString());
-                binding.httpresponse.text = response.toString()
-
-
-
-                // load the image into the ImageView using Glide.
-
+                Log.d(TAG, response.getString("bricks"));
+                binding.httpresponse.text = response.getString("bricks")
 
             },
 
