@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private lateinit var binding: ActivityMainBinding
     public val dataUpdate = StringBuilder()
     var dataStream = ArrayList<String>()
+    var line: String? = null
 
 
 
@@ -440,7 +441,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         val url = URL("https://bbpoc2-dot-betterbricks.ts.r.appspot.com/algo")
         val connection = url.openConnection()
         BufferedReader(InputStreamReader(connection.getInputStream())).use { inp ->
-            var line: String?
+
             while (inp.readLine().also { line = it } != null) {
                 binding.httpresponse.text = "Bricks  " + line + "\n" + "Completed  " + DateTimeFormatter
                     .ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")

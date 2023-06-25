@@ -329,7 +329,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
             val sbTemp = StringBuilder()
             sbTemp.append("\nStopped.")
             Log.d("receive1", " $sbTemp")
-           // binding.messagelogTextView.append(sbTemp)
+            binding.messagelogTextView?.append(sbTemp)
 
             val stopintent = Intent(applicationContext, SensorService::class.java)
             stopintent.putExtra("Stop", true)
