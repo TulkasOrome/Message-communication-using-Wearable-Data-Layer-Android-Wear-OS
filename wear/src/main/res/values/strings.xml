@@ -15,6 +15,7 @@
     <string name="stop">Stop</string>
     <string name="start">Start</string>
     <string name="brick_count">Brick Count</string>
+    <string name="brick_count_name">Brick Count</string>
 
 
 </resources>
