@@ -15,6 +15,7 @@ android {
         versionCode 78
         versionName "2.6"
         wearAppUnbundled true
+
     }
 
     buildFeatures {
@@ -63,4 +64,7 @@ dependencies {
     compileOnly 'com.google.android.wearable:wearable:2.9.0'
     implementation 'com.google.android.support:wearable:2.9.0'
     testImplementation 'junit:junit:4.13.2'
+    implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
+
+
 }

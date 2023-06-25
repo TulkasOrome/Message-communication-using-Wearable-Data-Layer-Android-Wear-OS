@@ -205,19 +205,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
                     sendMessageTask.addOnCompleteListener {
                         if (it.isSuccessful) {
                             Log.d(TAG_MESSAGE_RECEIVED, "Message sent successfully")
-                            binding.messagelogTextView.visibility = View.VISIBLE
+                         //   binding.messagelogTextView.visibility = View.VISIBLE
 
                             val sbTemp = StringBuilder()
                            // sbTemp.append("\nSending.")
                             Log.d("receive1", " $sbTemp")
-                            binding.messagelogTextView.append(sbTemp)
+                          //  binding.messagelogTextView.append(sbTemp)
 
                             mobileDeviceConnected = true
 
                           //  binding.textInputLayout.visibility = View.VISIBLE
                           //  binding.sendmessageButton.visibility = View.VISIBLE
-                            binding.deviceconnectionStatusTv.visibility = View.VISIBLE
-                            binding.deviceconnectionStatusTv.text = "Mobile device is connected"
+                         //   binding.deviceconnectionStatusTv.visibility = View.VISIBLE
+                           // binding.deviceconnectionStatusTv.text = "Mobile device is connected"
                         } else {
                             Log.d(TAG_MESSAGE_RECEIVED, "Message failed.")
                         }
@@ -232,23 +232,23 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
             }//emd of if
             else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
                 try {
-                    binding.messagelogTextView.visibility = View.VISIBLE
+                 //   binding.messagelogTextView.visibility = View.VISIBLE
                    // binding.textInputLayout.visibility = View.VISIBLE
                  //   binding.sendmessageButton.visibility = View.VISIBLE
-                    binding.deviceconnectionStatusTv.visibility = View.GONE
+                 //   binding.deviceconnectionStatusTv.visibility = View.GONE
 
                     val sbTemp = StringBuilder()
                     sbTemp.append("\n")
                     sbTemp.append(s1)
                     sbTemp.append(" - (Received from mobile)")
                     Log.d("receive1", " $sbTemp")
-                    binding.messagelogTextView.append(sbTemp)
+                   // binding.messagelogTextView.append(sbTemp)
 
 
-                    binding.scrollviewTextMessageLog.requestFocus()
-                    binding.scrollviewTextMessageLog.post {
-                        binding.scrollviewTextMessageLog.fullScroll(ScrollView.FOCUS_DOWN)
-                    }
+                  //  binding.scrollviewTextMessageLog.requestFocus()
+                  //  binding.scrollviewTextMessageLog.post {
+                    //    binding.scrollviewTextMessageLog.fullScroll(ScrollView.FOCUS_DOWN)
+                 //   }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -306,7 +306,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
             val sbTemp = StringBuilder()
             sbTemp.append("\nSending.")
             Log.d("receive1", " $sbTemp")
-            binding.messagelogTextView.append(sbTemp)
+         //   binding.messagelogTextView.append(sbTemp)
 
             // starting the service
             startForegroundService(sintent)
@@ -329,7 +329,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
             val sbTemp = StringBuilder()
             sbTemp.append("\nStopped.")
             Log.d("receive1", " $sbTemp")
-            binding.messagelogTextView.append(sbTemp)
+           // binding.messagelogTextView.append(sbTemp)
 
             val stopintent = Intent(applicationContext, SensorService::class.java)
             stopintent.putExtra("Stop", true)
