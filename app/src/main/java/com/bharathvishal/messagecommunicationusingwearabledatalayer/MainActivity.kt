@@ -463,10 +463,52 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             binding.messagelogTextView.text = "Data Stopped"
             binding.httpresponse.text = "Bricks"
             sendGetRequest()
+            if (wearableDeviceConnected) {
+
+
+                    val nodeId: String = messageEvent?.sourceNodeId!!
+                    // Set the data of the message to be the bytes of the Uri.
+                    val payload: ByteArray =
+                        line.toString().toByteArray()
+
+                    // Send the rpc
+                    // Instantiates clients without member variables, as clients are inexpensive to
+                    // create. (They are cached and shared between GoogleApi instances.)
+                    val sendMessageTask =
+                        Wearable.getMessageClient(activityContext!!)
+                            .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
+
+                    sendMessageTask.addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            Log.d("send1", "Message sent successfully")
+                            val sbTemp = StringBuilder()
+                            sbTemp.append("\n")
+                            sbTemp.append(binding.messagecontentEditText.text.toString())
+                            sbTemp.append(" (Sent to Wearable)")
+                            Log.d("receive1", " $sbTemp")
+                            binding.messagelogTextView.append(sbTemp)
+
+                           // binding.scrollviewText.requestFocus()
+                          //  binding.scrollviewText.post {
+                            //    binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
+                           // }
+                        } else {
+                            Log.d("send1", "Message failed.")
+                        }
+                    }
+                } else {
+                    Toast.makeText(
+                        activityContext,
+                        "Message content is empty. Please enter some message and proceed",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
 
 
 
-        }
+
+
         if (String(p0.data, StandardCharsets.UTF_8) == "Started"){
             binding.deviceconnectionStatusTv.text = "Connected"
             binding.messagelogTextView.text = "Data Incoming"
