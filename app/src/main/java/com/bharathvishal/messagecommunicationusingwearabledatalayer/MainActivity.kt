@@ -462,7 +462,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         // create. (They are cached and shared between GoogleApi instances.)
         val sendMessageTask =
             Wearable.getMessageClient(activityContext!!)
-                .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
+                .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, "message from APP".toByteArray())
 
         sendMessageTask.addOnCompleteListener {
             if (it.isSuccessful) {
@@ -473,6 +473,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 sbTemp.append(" (Sent to Wearable)")
                 Log.d("receive1", " $sbTemp")
                 binding.messagelogTextView.append(sbTemp)
+                MessageSender(
+                    "/MessageChannel",
+                    "Data from app",
+                    applicationContext
+                ).start()
 
                 // binding.scrollviewText.requestFocus()
                 //  binding.scrollviewText.post {
