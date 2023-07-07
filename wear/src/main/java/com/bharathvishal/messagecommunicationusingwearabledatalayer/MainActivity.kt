@@ -210,7 +210,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
                             val sbTemp = StringBuilder()
                            // sbTemp.append("\nSending.")
                             Log.d("receive1", " $sbTemp")
-                          //  binding.messagelogTextView.append(sbTemp)
+                            binding.messagelogTextView?.append(sbTemp)
 
                             mobileDeviceConnected = true
 
@@ -242,7 +242,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
                     sbTemp.append(s1)
                     sbTemp.append(" - (Received from mobile)")
                     Log.d("receive1", " $sbTemp")
-                   // binding.messagelogTextView.append(sbTemp)
+                    binding.messagelogTextView?.append(sbTemp)
 
 
                   //  binding.scrollviewTextMessageLog.requestFocus()
@@ -329,15 +329,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
             val sbTemp = StringBuilder()
             sbTemp.append("\nStopped.")
             Log.d("receive1", " $sbTemp")
-            binding.messagelogTextView?.append(sbTemp)
+           // binding.messagelogTextView?.append(sbTemp)
+
 
             val stopintent = Intent(applicationContext, SensorService::class.java)
             stopintent.putExtra("Stop", true)
             // stopping the service
             stopService(Intent(stopintent))
-            Wearable.getDataClient(activityContext!!).removeListener(this)
-            Wearable.getMessageClient(activityContext!!).removeListener(this)
-            Wearable.getCapabilityClient(activityContext!!).removeListener(this)
+            //Wearable.getDataClient(activityContext!!).removeListener(this)
+           // Wearable.getMessageClient(activityContext!!).removeListener(this)
+           // Wearable.getCapabilityClient(activityContext!!).removeListener(this)
             Log.d("STOPPED", "Stopped")
         }
     }

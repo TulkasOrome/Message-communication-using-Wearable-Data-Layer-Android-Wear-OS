@@ -14,7 +14,7 @@
     <string name="send_message_to_phone">Send Message to Phone</string>
     <string name="stop">Stop</string>
     <string name="start">Start</string>
-    <string name="brick_count">Brick Count</string>
+    <string name="brick_count" />
     <string name="brick_count_name">Brick Count</string>
 
 

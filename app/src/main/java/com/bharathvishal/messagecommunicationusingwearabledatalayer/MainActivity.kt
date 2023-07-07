@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     public val dataUpdate = StringBuilder()
     var dataStream = ArrayList<String>()
     var line: String? = null
+    var nodeGlobal = ""
 
 
 
@@ -212,6 +213,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 nodeResults.add(node.id)
                 try {
                     val nodeId = node.id
+                    nodeGlobal = node.id
                     // Set the data of the message to be the bytes of the Uri.
                     val payload: ByteArray = wearableAppCheckPayload.toByteArray()
                     // Send the rpc
@@ -296,143 +298,53 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     }
 
 
-
-  /*  fun createDataStream(data: String) {
-
-        if (dataStream.size <= 50) {
-             dataStream.add(data)
-             checkForDelta(dataStream)
-        } else if (dataStream.size == 50) {
-            dataStream.removeLast()
-        }
-    }
-    var isComma = ' '
-    var x1 = ' '
-    var x2 = ' '
-    var x3= ' '
-    var x4= ' '
-    var y1= ' '
-    var y2= ' '
-    var y3= ' '
-    var y4= ' '
-*/
-
-   // fun String.addCharAtIndex(char: Char, index: Int) =
-      //  StringBuilder(this).apply { insert(index, char) }.toString()
-
-    /*fun checkForDelta(arr: ArrayList<String>){
-        var x = ""
-        var isComma = ' '
-        for(item in arr){
-            if (item.contains("gyroscope")){
-                val gyroFindX = item.indexOf("X")
-                val gyroXStart = gyroFindX + 4
-                 while (isComma != ','){
-                   x1 = item[gyroXStart]
-                    val check = item[gyroXStart + 1]
-                    if (item[gyroXStart+1] == ','){
-                      isComma = ','
-                }
-                    else if (item[gyroXStart+2] == ','){
-                        x2 = item[gyroXStart + 1]
-                        isComma = item[gyroXStart+2]
-                }
-                   else if (item[gyroXStart+3] == ','){
-                      x3 = item[gyroXStart + 2]
-                       isComma = item[gyroXStart+3]
-                }
-                   else if (item[gyroXStart+4] == ','){
-                        x4 = item[gyroXStart + 3]
-                       isComma = item[gyroXStart+4]
-                   }}
-                if (x2 != null){
-                  x = x.addCharAtIndex(x1, 0)
-                  x = x.addCharAtIndex(x2, 1)
-
-                }
-
-                print(x)
+    fun sendMessage(pl: String) {
+        if (wearableDeviceConnected) {
 
 
+                val nodeId: String = messageEvent?.sourceNodeId!!
+                // Set the data of the message to be the bytes of the Uri.
+                val payload: ByteArray =
+                    pl.toByteArray()
 
-            }
-            else if (item.contains("gyroscope")){
-                val gyroFindY = item.indexOf("Y")
-                val gyroYStart = gyroFindY + 4
-                while (isComma != ','){
-                    val y1 = item[gyroYStart]
-                    val check = item[gyroYStart + 1]
-                    if (item[gyroYStart+1] == ','){
-                        isComma = ','
+                // Send the rpc
+                // Instantiates clients without member variables, as clients are inexpensive to
+                // create. (They are cached and shared between GoogleApi instances.)
+                val sendMessageTask =
+                    Wearable.getMessageClient(activityContext!!)
+                        .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, "TESTDATA".toByteArray())
+
+                sendMessageTask.addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Log.d("send1", "Message sent successfully")
+                        val sbTemp = StringBuilder()
+                        sbTemp.append("\n")
+                        sbTemp.append(binding.messagecontentEditText.text.toString())
+                        sbTemp.append(" (Sent to Wearable)")
+                        Log.d("receive1", " $sbTemp")
+                        binding.messagelogTextView.append(sbTemp)
+
+                       // binding.scrollviewText.requestFocus()
+                       // binding.scrollviewText.post {
+                           // binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
+                        }
                     }
-                    else if (item[gyroYStart+2] == ','){
-                        val y2 = item[gyroYStart] + 1
-                        isComma = item[gyroYStart+2]
-                    }
-                    else if (item[gyroYStart+3] == ','){
-                        val y3 = item[gyroYStart] + 2
-                        isComma = item[gyroYStart+3]
-                    }
-                    else if (item[gyroYStart+4] == ','){
-                        val y4 = item[gyroYStart] + 3
-                        isComma = item[gyroYStart+4]
-                    }}
-
-
-
+                }
+            else {
+                Toast.makeText(
+                    activityContext,
+                    "Message content is empty. Please enter some message and proceed",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
-        }
-  */
 
 
 
-   // fun httpReq(){
 
 
-      //  val volleyQueue = Volley.newRequestQueue(this)
-     //   val url = "https://bbpoc2-dot-betterbricks.ts.r.appspot.com/algo"
 
-       
-       // val url = "https://127.0.0.1:5000/algo"
 
-     //   val jsonObjectRequest = JsonObjectRequest(
-            // we are using GET HTTP request method
-          //  Request.Method.GET,
-            // url we want to send the HTTP request to
-         //   url,
-            // this parameter is used to send a JSON object
-            // to the server, since this is not required in
-            // our case, we are keeping it `null`
-         //   null,
-
-            // lambda function for handling the case
-            // when the HTTP request succeeds
-          //  { response ->
-                // get the image url from the JSON object
-
-                //val json = response["response"]
-              //  Log.d(TAG, response.getJSONObject("bricks").toString())
-             //   binding.httpresponse.text = response.getJSONObject("bricks").toString()
-
-         //   },
-
-            // lambda function for handling the
-            // case when the HTTP request fails
-           // { error ->
-                // make a Toast telling the user
-                // that something went wrong
-              //  Toast.makeText(this, "An error occured getting brick count from the backend service", Toast.LENGTH_LONG).show()
-                // log the error message in the error stream
-              //  Log.e("MainActivity", "Backend Connection Error error: ${error.localizedMessage}")
-           // }
-      // )
-
-        // add the json request object created
-        // above to the Volley request queue
-       // volleyQueue.add(jsonObjectRequest)
-
-   // }
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
@@ -440,6 +352,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
         val url = URL("https://bbpoc2-dot-betterbricks.ts.r.appspot.com/algo")
         val connection = url.openConnection()
+        
         BufferedReader(InputStreamReader(connection.getInputStream())).use { inp ->
 
             while (inp.readLine().also { line = it } != null) {
@@ -449,51 +362,15 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                         .withZone(ZoneOffset.ofHours(10))
                         .format(Instant.now())
             }
+
         }
-
-
-        val nodeId: String = messageEvent?.sourceNodeId!!
-        // Set the data of the message to be the bytes of the Uri.
-        val payload: ByteArray =
-            line.toString().toByteArray()
-
-        // Send the rpc
-        // Instantiates clients without member variables, as clients are inexpensive to
-        // create. (They are cached and shared between GoogleApi instances.)
-        val sendMessageTask =
-            Wearable.getMessageClient(activityContext!!)
-                .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, "message from APP".toByteArray())
-
-        sendMessageTask.addOnCompleteListener {
-            if (it.isSuccessful) {
-                Log.d("send1", "Message sent successfully")
-                val sbTemp = StringBuilder()
-                sbTemp.append("\n")
-                sbTemp.append(binding.messagecontentEditText.text.toString())
-                sbTemp.append(" (Sent to Wearable)")
-                Log.d("receive1", " $sbTemp")
-                binding.messagelogTextView.append(sbTemp)
-                MessageSender(
-                    "/MessageChannel",
-                    "Data from app",
-                    applicationContext
-                ).start()
-
-                // binding.scrollviewText.requestFocus()
-                //  binding.scrollviewText.post {
-                //    binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
-                // }
-
-
-            } else {
-                Toast.makeText(
-                    activityContext,
-                    "Message content is empty. Please enter some message and proceed",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
+        sendMessage(line.toString())
     }
+      //  sendMessage(line.toString(), nodeGlobal)
+
+
+
+
 
 
 
