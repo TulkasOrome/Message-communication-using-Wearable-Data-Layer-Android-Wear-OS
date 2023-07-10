@@ -3,9 +3,10 @@ package com.betterbrick.proofofconcept
 import android.Manifest.permission.*
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentValues.TAG
+import android.app.AsyncNotedAppOp
 import android.content.Context
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
@@ -15,6 +16,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import com.betterbrick.proofofconcept.databinding.ActivityMainBinding
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
@@ -30,6 +32,7 @@ import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.*
+import java.util.concurrent.locks.AbstractQueuedLongSynchronizer
 
 
 class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
@@ -59,6 +62,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     var dataStream = ArrayList<String>()
     var line: String? = null
     var nodeGlobal = ""
+    var gLine: String? = null
 
 
 
@@ -294,6 +298,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     }
 
 
+
+
     override fun onDataChanged(p0: DataEventBuffer) {
     }
 
@@ -312,7 +318,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 // create. (They are cached and shared between GoogleApi instances.)
                 val sendMessageTask =
                     Wearable.getMessageClient(activityContext!!)
-                        .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, "TESTDATA".toByteArray())
+                        .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
 
                 sendMessageTask.addOnCompleteListener {
                     if (it.isSuccessful) {
@@ -342,29 +348,30 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
 
 
-
-
-
-
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
-    fun sendGetRequest() {
+    suspend fun sendGetRequest() {
 
         val url = URL("https://bbpoc2-dot-betterbricks.ts.r.appspot.com/algo")
         val connection = url.openConnection()
-        
-        BufferedReader(InputStreamReader(connection.getInputStream())).use { inp ->
 
-            while (inp.readLine().also { line = it } != null) {
-                binding.httpresponse.text =
-                    "Bricks  " + line + "\n" + "Completed  " + DateTimeFormatter
-                        .ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")
-                        .withZone(ZoneOffset.ofHours(10))
-                        .format(Instant.now())
-            }
+            BufferedReader(InputStreamReader(connection.getInputStream())).use { inp ->
+
+                while (inp.readLine().also { line = it } != null) {
+                    gLine = line
+                    binding.httpresponse.text =
+                        "Bricks  " + line + "\n" + "Completed  " + DateTimeFormatter
+                            .ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")
+                            .withZone(ZoneOffset.ofHours(10))
+                            .format(Instant.now())
+
+                }
+
 
         }
-        sendMessage(line.toString())
+
+
+
     }
       //  sendMessage(line.toString(), nodeGlobal)
 
@@ -383,7 +390,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             binding.deviceconnectionStatusTv.text = "Stopped but still connected"
             binding.messagelogTextView.text = "Data Stopped"
             binding.httpresponse.text = "Bricks"
-            sendGetRequest()
+            runBlocking {
+                val res = async {sendGetRequest()}
+                val response = res.await()
+
+            }
+            gLine?.let { sendMessage(it) }
+          //  MyAsyncTask().execute()
 
             }
 
@@ -515,3 +528,4 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
     }
 }
+

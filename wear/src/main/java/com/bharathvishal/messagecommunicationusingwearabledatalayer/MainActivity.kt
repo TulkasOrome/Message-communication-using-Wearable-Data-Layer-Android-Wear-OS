@@ -210,7 +210,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
                             val sbTemp = StringBuilder()
                            // sbTemp.append("\nSending.")
                             Log.d("receive1", " $sbTemp")
-                            binding.messagelogTextView?.append(sbTemp)
+                         //   binding.messagelogTextView?.append(sbTemp)
 
                             mobileDeviceConnected = true
 
@@ -240,9 +240,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
                     val sbTemp = StringBuilder()
                     sbTemp.append("\n")
                     sbTemp.append(s1)
-                    sbTemp.append(" - (Received from mobile)")
+                  //  sbTemp.append(" - (Received from mobile)")
                     Log.d("receive1", " $sbTemp")
-                    binding.messagelogTextView?.append(sbTemp)
+                    binding.messagelogTextView?.setText(sbTemp)
 
 
                   //  binding.scrollviewTextMessageLog.requestFocus()
@@ -288,6 +288,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
     }
 
 
+    @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onClick(view: View) {
 
@@ -297,6 +298,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
         sintent.putExtra("Start", true)
 
         if (view === start) {
+            binding.brickLaid?.text = "Bricks are being laid"
 
             com.betterbrick.proofofconcept.MessageSender(
                 "/MessageChannel",
@@ -321,6 +323,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
         // process to be performed
         // if stop button is clicked
         else if (view === stop) {
+            binding.brickLaid?.text = "Bricks are not being laid"
             com.betterbrick.proofofconcept.MessageSender(
                 "/MessageChannel",
                 "Stopped",
